@@ -71,7 +71,7 @@ class LibraryTestCase(TestCase):
         """Returns the learning models dict"""
 
         learning_models = get_registered_learning_models()
-        self.assertEqual(len(learning_models), 1)
+        self.assertEqual(len(learning_models), 3)
         self.assertEqual(learning_models['testmodel'], TestModel)
 
     def test_get_non_existing_learning_model(self):
@@ -80,4 +80,4 @@ class LibraryTestCase(TestCase):
 
     def test_get_learning_model(self):
         """Returns the registered model class"""
-        self.assertEqual(get_learning_model('testmodel'), TestModel)
+        self.assertEqual(get_learning_model('testmodel').__class__, TestModel)

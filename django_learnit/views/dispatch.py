@@ -14,6 +14,3 @@ def labelleling_view_dispatch(request, name, pk):
         raise Http404("Learning model `%(name)s` is not registered" % {
             'name': name
         })
-
-    if learning_model.is_classifier():
-        print("KEK")

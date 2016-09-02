@@ -105,4 +105,9 @@ def get_learning_model(learning_model_name):
     Returns the registered learning model or None
     """
     app_config = apps.get_app_config('django_learnit')
-    return app_config.learning_models.get(learning_model_name)
+    learning_models = app_config.learning_models
+
+    if learning_model_name in learning_models:
+        return learning_models[learning_model_name]()
+
+    return None
