@@ -18,7 +18,8 @@ DEFAULT_SETTINGS = dict(
             'ENGINE': 'django.db.backends.sqlite3'
         }
     },
-    ROOT_URLCONF='django_learnit.tests.urls'
+    ROOT_URLCONF='django_learnit.tests.urls',
+    SILENCED_SYSTEM_CHECKS=["1_7.W001"]
 )
 
 

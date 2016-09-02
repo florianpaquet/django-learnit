@@ -4,7 +4,7 @@ from django_learnit import __version__
 
 
 requires = [
-    'Django'
+    'Django>=1.7'
 ]
 
 setup(
@@ -13,5 +13,7 @@ setup(
     author='Florian PAQUET',
     license='MIT',
     packages=find_packages(),
-    install_requires=requires
+    install_requires=requires,
+    tests_require=requires,
+    test_suite='runtests.runtests'
 )

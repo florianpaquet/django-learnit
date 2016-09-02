@@ -10,7 +10,7 @@ class LearnItConfig(AppConfig):
         """
         Initialize an empty learning models reference
         """
-        super().__init__(*args, **kwargs)
+        super(LearnItConfig, self).__init__(*args, **kwargs)
         self.learning_models = {}
 
     def ready(self):
