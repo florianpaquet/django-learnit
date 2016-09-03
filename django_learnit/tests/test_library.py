@@ -11,7 +11,7 @@ from ..library import (
     get_registered_learning_models,
     get_learning_model)
 
-from .learnit import TestModel
+from .learning_models import TestModel
 
 
 class LibraryTestCase(TestCase):
@@ -58,13 +58,13 @@ class LibraryTestCase(TestCase):
     def test_installed_libraries(self):
         """Returns installed libraries"""
         installed_libraries = get_installed_libraries()
-        self.assertIn('django_learnit.tests.learnit', installed_libraries)
+        self.assertIn('django_learnit.tests.learning_models', installed_libraries)
 
     def test_import_library(self):
         """Returns libraby in module"""
-        from .learnit import register as original_register
+        from .learning_models import register as original_register
 
-        register = import_library('django_learnit.tests.learnit')
+        register = import_library('django_learnit.tests.learning_models')
         self.assertEqual(register, original_register)
 
     def test_registered_learning_models(self):

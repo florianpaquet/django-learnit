@@ -8,9 +8,9 @@ class ClassifierChoicesMixin(object):
         self.fields['label'].choices = classes
 
 
-class SingleLabelClassifierForm(forms.Form):
+class SingleLabelClassifierForm(ClassifierChoicesMixin, forms.Form):
     label = forms.ChoiceField(widget=forms.RadioSelect())
 
 
-class MultiLabelClassifierForm(forms.Form):
+class MultiLabelClassifierForm(ClassifierChoicesMixin, forms.Form):
     label = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple())

@@ -10,6 +10,7 @@ import django
 
 DEFAULT_SETTINGS = dict(
     INSTALLED_APPS=(
+        'django.contrib.contenttypes',
         'django_learnit',
         'django_learnit.tests',
     ),

@@ -1,10 +1,12 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.views.generic import View
 
 from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
+from ..views.base import LearningModelMixin
 
 from .models import Document
+from .learning_models import TestModel
 
 
 class LearningModelTestCase(TestCase):
@@ -60,3 +62,21 @@ class LearningModelTestCase(TestCase):
             pass
 
         self.assertFalse(TestModel().is_classifier())
+
+
+# -- Mixins
+
+class LearningModelMixinTestView(LearningModelMixin, View):
+    pass
+
+
+class LearningModelMixinTestCase(TestCase):
+
+    def setUp(self):
+        self.view = LearningModelMixinTestView(kwargs={
+            'name': TestModel.get_name()
+        })
+
+    def test_get_learning_model(self):
+        """Learning model is returned"""
+        self.assertEqual(self.view.get_learning_model().__class__, TestModel)

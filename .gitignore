@@ -1,7 +1,7 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
-*.egg
+*.eggs
 .coverage
 .tox
 htmlcov/

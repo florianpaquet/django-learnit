@@ -54,13 +54,13 @@ def import_library(name):
 
 def get_installed_libraries():
     """
-    Returns registered libraries in any `learnit` module
+    Returns registered libraries in any `learning_models` module
     at the root of all installed applications
     """
     libraries = []
 
     candidates = [
-        '%s.learnit' % app_config.name
+        '%s.learning_models' % app_config.name
         for app_config in apps.get_app_configs()
     ]
 
