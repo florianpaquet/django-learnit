@@ -13,8 +13,9 @@ class LabelledDocument(models.Model):
     # Generic relation
     document_content_type = models.ForeignKey(ContentType)
     document_id = models.PositiveIntegerField()
-
     document = GenericForeignKey('document_content_type', 'document_id')
+
+    value = models.TextField()
 
     class Meta:
         unique_together = ('model_name', 'document_content_type', 'document_id')

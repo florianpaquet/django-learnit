@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 
-from .library import get_registered_learning_models
+from .library import (
+    get_installed_libraries,
+    get_registered_learning_models)
 
 
 class LearnItConfig(AppConfig):
@@ -18,5 +20,5 @@ class LearnItConfig(AppConfig):
         Autodiscover `learnit` modules when django app is ready
         and register learning models libraries
         """
-        self.learning_models = get_registered_learning_models()
-
+        libraries = get_installed_libraries()
+        self.learning_models = get_registered_learning_models(libraries)

@@ -69,8 +69,8 @@ class LibraryTestCase(TestCase):
 
     def test_registered_learning_models(self):
         """Returns the learning models dict"""
-
-        learning_models = get_registered_learning_models()
+        libraries = get_installed_libraries()
+        learning_models = get_registered_learning_models(libraries)
         self.assertEqual(len(learning_models), 3)
         self.assertEqual(learning_models['testmodel'], TestModel)
 
@@ -81,3 +81,11 @@ class LibraryTestCase(TestCase):
     def test_get_learning_model(self):
         """Returns the registered model class"""
         self.assertEqual(get_learning_model('testmodel').__class__, TestModel)
+
+    def test_register_on_different_module_raises_on_duplicate(self):
+        """Raise exception when registering duplicate name in different modules"""
+        libraries = get_installed_libraries()
+        libraries.append('django_learnit.tests.learning_models_test.duplicate')
+
+        with self.assertRaises(DuplicateLearningModelName):
+            get_registered_learning_models(libraries)

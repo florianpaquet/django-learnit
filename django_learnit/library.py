@@ -76,12 +76,11 @@ def get_installed_libraries():
     return libraries
 
 
-def get_registered_learning_models():
+def get_registered_learning_models(libraries):
     """
     Returns a dict with registered learning models as (model_name: model_class)
     """
     learning_models = {}
-    libraries = get_installed_libraries()
 
     for library in libraries:
         register = import_library(library)
