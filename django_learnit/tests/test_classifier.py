@@ -1,12 +1,16 @@
-from django.test import TestCase
-from django.views.generic import TemplateView
+from django.test import (
+    TestCase,
+    RequestFactory)
+from django.views.generic import (
+    TemplateView,
+    FormView)
 
 from ..exceptions import ImproperlyConfigured
 from ..forms.classifier import (
     SingleLabelClassifierForm,
     MultiLabelClassifierForm)
 from ..learning.classifier import ClassifierModel
-from ..views.classifier import ClassifierModelMixin
+from ..views.classifier import ClassifierModelLabellingMixin
 
 from .learning_models import (
     TestSingleLabelClassifierModel,
@@ -64,14 +68,15 @@ class ClassifierFormTestCase(TestCase):
 
 # -- Mixins
 
-class ClassifierModelMixinTestView(ClassifierModelMixin, TemplateView):
+class ClassifierModelLabellingMixinTestView(ClassifierModelLabellingMixin, TemplateView):
     pass
 
 
-class ClassifierModelMixinTestCase(TestCase):
+class ClassifierModelLabellingMixinTestCase(TestCase):
 
     def setUp(self):
-        self.view = ClassifierModelMixinTestView()
+        self.factory = RequestFactory()
+        self.view = ClassifierModelLabellingMixinTestView()
 
     def test_get_classes(self):
         """Returns the classifier classes"""
@@ -103,3 +108,16 @@ class ClassifierModelMixinTestCase(TestCase):
         # Multi label
         self.view.learning_model = TestMultiLabelClassifierModel()
         self.assertEqual(self.view.get_form_class(), MultiLabelClassifierForm)
+
+    def test_form_kwargs(self):
+        """Classes are added to the form kwargs"""
+        request = self.factory.get('/')
+        learning_model = TestSingleLabelClassifierModel()
+
+        class TestView(ClassifierModelLabellingMixin, FormView):
+            pass
+
+        view = TestView(request=request, learning_model=learning_model)
+        kwargs = view.get_form_kwargs()
+
+        self.assertEqual(kwargs['classes'], learning_model.get_classes())

@@ -19,6 +19,16 @@ DEFAULT_SETTINGS = dict(
             'ENGINE': 'django.db.backends.sqlite3'
         }
     },
+    TEMPLATES=[
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'APP_DIRS': True,
+        }
+    ],
+    TEMPLATE_LOADERS=[
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader'
+    ],
     ROOT_URLCONF='django_learnit.tests.urls',
     SILENCED_SYSTEM_CHECKS=["1_7.W001"]
 )
