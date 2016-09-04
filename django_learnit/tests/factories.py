@@ -1,6 +1,6 @@
 import factory
 
-from .models import LabelledDocument
+from ..models import LabelledDocument
 
 
 class LabelledDocumentFactory(factory.django.DjangoModelFactory):

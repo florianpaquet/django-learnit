@@ -15,9 +15,9 @@ from ..views.base import (
     DocumentMixin,
     LabelledDocumentFormMixin,
     BaseLearningModelLabellingView)
-from ..factories import LabelledDocumentFactory
 from ..models import LabelledDocument
 
+from .factories import LabelledDocumentFactory
 from .learning_models import TestModel
 from .models import Document
 
