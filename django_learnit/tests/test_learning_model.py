@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.views.generic import View
+from django.views.generic import TemplateView
 
 from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
@@ -66,7 +66,7 @@ class LearningModelTestCase(TestCase):
 
 # -- Mixins
 
-class LearningModelMixinTestView(LearningModelMixin, View):
+class LearningModelMixinTestView(LearningModelMixin, TemplateView):
     pass
 
 
@@ -80,3 +80,14 @@ class LearningModelMixinTestCase(TestCase):
     def test_get_learning_model(self):
         """Learning model is returned"""
         self.assertEqual(self.view.get_learning_model().__class__, TestModel)
+
+    def test_get_context_data(self):
+        """Adds the template name in the context"""
+        target_template_name = 'learning_models/%(name)s.html' % {
+            'name': TestModel.get_name()
+        }
+
+        self.view.learning_model = TestModel()
+        context = self.view.get_context_data()
+
+        self.assertEqual(context['document_detail_template_name'], target_template_name)

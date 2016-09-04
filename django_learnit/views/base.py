@@ -19,6 +19,17 @@ class LearningModelMixin(object):
         model_name = self.kwargs['name']
         return get_learning_model(model_name)
 
+    def get_context_data(self, **kwargs):
+        """
+        Adds the document detail template name for the learning model
+        """
+        context = super(LearningModelMixin, self).get_context_data(**kwargs)
+        context['document_detail_template_name'] = 'learning_models/%(name)s.html' % {
+            'name': self.learning_model.get_name()
+        }
+
+        return context
+
 
 class DocumentMixin(SingleObjectMixin):
     """
