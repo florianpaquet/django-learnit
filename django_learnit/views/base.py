@@ -76,7 +76,7 @@ class LabelledDocumentFormMixin(object):
             model_name=self.learning_model.get_name(),
             value=LabelledDocument.serialize_value(form.cleaned_data))
 
-        return super().form_valid(form)
+        return super(LabelledDocumentFormMixin, self).form_valid(form)
 
 
 class BaseLearningModelLabellingView(LearningModelMixin, DocumentMixin,
