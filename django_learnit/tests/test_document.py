@@ -28,6 +28,11 @@ class LabelledDocumentModelTestCase(TransactionTestCase):
         self.assertTrue(
             LabelledDocumentFactory.create(model_name='model2', document=document))
 
+
+# -- Managers
+
+class LabelledDocumentManagerTestCase(TestCase):
+
     def test_get_for_document_is_none_when_missing(self):
         """Returns None when document is not labelled"""
         document = Document.objects.create()
