@@ -1,10 +1,17 @@
+import json
+
+from django import forms
 from django.db import IntegrityError
 from django.test import (
     TestCase,
     TransactionTestCase)
-from django.views.generic import View
+from django.views.generic import (
+    View,
+    FormView)
 
-from ..views.base import DocumentMixin
+from ..views.base import (
+    DocumentMixin,
+    LabelledDocumentFormMixin)
 from ..factories import LabelledDocumentFactory
 from ..models import LabelledDocument
 
@@ -27,6 +34,33 @@ class LabelledDocumentModelTestCase(TransactionTestCase):
 
         self.assertTrue(
             LabelledDocumentFactory.create(model_name='model2', document=document))
+
+    def test_serialize_value(self):
+        """Value is serialized as a JSON object"""
+        value = [['foo', 'bar', 'baz'], {'hello': 'world'}]
+        self.assertEqual(
+            LabelledDocument.serialize_value(value), json.dumps(value))
+
+    def test_invalid_json_value(self):
+        """Returns an empty dict when json value is invalid"""
+        document = Document.objects.create()
+        labelled_document = LabelledDocumentFactory.create(
+            document=document, value="{{{foobar]")
+
+        self.assertEqual(labelled_document.deserialize_value(), {})
+
+    def test_json_value(self):
+        """JSON value is deserialized"""
+        value = {
+            'foo': 'bar',
+            'hello': ['world', '!']
+        }
+
+        document = Document.objects.create()
+        labelled_document = LabelledDocumentFactory.create(
+            document=document, value=json.dumps(value))
+
+        self.assertEqual(labelled_document.deserialize_value(), value)
 
 
 # -- Managers
@@ -91,3 +125,49 @@ class DocumentMixinTestCase(TestCase):
         """Returns the learning model queryset"""
         self.view.learning_model = TestModel()
         self.assertEqual(self.view.get_queryset().model, Document)
+
+
+class LabelledDocumentFormMixinTestView(LabelledDocumentFormMixin, FormView):
+    success_url = '/'
+
+
+class LabelledDocumentFormMixinTestCase(TestCase):
+
+    def setUp(self):
+        self.document = Document.objects.create()
+        self.learning_model = TestModel()
+
+        self.view = LabelledDocumentFormMixinTestView()
+        self.view.object = self.document
+        self.view.learning_model = self.learning_model
+
+    def test_get_initial_without_labelled_document(self):
+        """Initial data is empty"""
+        self.assertEqual(self.view.get_initial(), {})
+
+    def test_get_initial(self):
+        """Initial data is the LabelledDocument JSON value"""
+        value = {
+            'foo': 'bar',
+            'hello': ['world']
+        }
+
+        LabelledDocumentFactory.create(
+            document=self.document,
+            model_name=self.learning_model.get_name(),
+            value=json.dumps(value))
+
+        self.assertDictEqual(self.view.get_initial(), value)
+
+    def test_labelled_document_is_created_when_form_valid(self):
+        """LabelledDocument is created when missing"""
+        form = forms.Form()
+        form.cleaned_data = {
+            'foo': 'bar'
+        }
+
+        self.view.form_valid(form)
+
+        labelled_document = LabelledDocument.objects.get_for_document(
+            self.document, self.learning_model.get_name())
+        self.assertEqual(labelled_document.deserialize_value(), form.cleaned_data)

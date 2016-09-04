@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -50,3 +52,22 @@ class LabelledDocument(models.Model):
 
     class Meta:
         unique_together = ('model_name', 'document_content_type', 'document_id')
+
+    @staticmethod
+    def serialize_value(value):
+        """
+        Serializes the value as a JSON object
+        """
+        return json.dumps(value)
+
+    def deserialize_value(self):
+        """
+        Deserialize the JSON contents of the value attribute and
+        returns it as a dict. On failure, returns an empty dict.
+        """
+        try:
+            return json.loads(self.value)
+        except json.JSONDecodeError:
+            pass
+
+        return {}
