@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.views.generic import TemplateView
 
 from ..exceptions import ImproperlyConfigured
-from ..forms import (
+from ..forms.classifier import (
     SingleLabelClassifierForm,
     MultiLabelClassifierForm)
 from ..learning.classifier import ClassifierModel

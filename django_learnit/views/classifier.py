@@ -1,4 +1,4 @@
-from ..forms import (
+from ..forms.classifier import (
     SingleLabelClassifierForm,
     MultiLabelClassifierForm)
 
