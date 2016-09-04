@@ -2,7 +2,6 @@ import json
 
 from django import forms
 from django.db import IntegrityError
-from django.http import HttpRequest
 from django.test import (
     RequestFactory,
     TestCase,
