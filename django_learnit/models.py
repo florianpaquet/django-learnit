@@ -67,7 +67,7 @@ class LabelledDocument(models.Model):
         """
         try:
             return json.loads(self.value)
-        except json.JSONDecodeError:
+        except ValueError:
             pass
 
         return {}
