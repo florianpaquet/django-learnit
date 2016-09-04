@@ -1,3 +1,4 @@
+from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 
 from ..library import get_learning_model
@@ -46,6 +47,10 @@ class DocumentMixin(SingleObjectMixin):
 
 
 class LabelledDocumentFormMixin(object):
+    """
+    LabelledDocument form mixin providing initial data &
+    post success action.
+    """
 
     def get_initial(self):
         """
@@ -72,3 +77,17 @@ class LabelledDocumentFormMixin(object):
             value=LabelledDocument.serialize_value(form.cleaned_data))
 
         return super().form_valid(form)
+
+
+class BaseLearningModelLabellingView(LearningModelMixin, DocumentMixin,
+                                     LabelledDocumentFormMixin, FormView):
+
+    def get(self, *args, **kwargs):
+        self.learning_model = self.get_learning_model()
+        self.object = self.get_object()
+        return super(BaseLearningModelLabellingView, self).get(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        self.learning_model = self.get_learning_model()
+        self.object = self.get_object()
+        return super(BaseLearningModelLabellingView, self).post(*args, **kwargs)

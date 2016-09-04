@@ -2,7 +2,9 @@ import json
 
 from django import forms
 from django.db import IntegrityError
+from django.http import HttpRequest
 from django.test import (
+    RequestFactory,
     TestCase,
     TransactionTestCase)
 from django.views.generic import (
@@ -11,7 +13,8 @@ from django.views.generic import (
 
 from ..views.base import (
     DocumentMixin,
-    LabelledDocumentFormMixin)
+    LabelledDocumentFormMixin,
+    BaseLearningModelLabellingView)
 from ..factories import LabelledDocumentFactory
 from ..models import LabelledDocument
 
@@ -171,3 +174,50 @@ class LabelledDocumentFormMixinTestCase(TestCase):
         labelled_document = LabelledDocument.objects.get_for_document(
             self.document, self.learning_model.get_name())
         self.assertEqual(labelled_document.deserialize_value(), form.cleaned_data)
+
+
+# -- Views
+
+class BaseLearningModelLabellingViewTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.document = Document.objects.create()
+
+    def setup_view(self, view, request, **kwargs):
+        view.request = request
+        view.kwargs = kwargs
+        view.form_class = forms.Form
+        view.template_name = ''
+        view.success_url = '/'
+        return view
+
+    def test_get_sets_attributes(self):
+        """GET sets learning model and object attributes"""
+        request = self.factory.get('/')
+
+        view = self.setup_view(
+            BaseLearningModelLabellingView(),
+            request,
+            name=TestModel.get_name(),
+            pk=self.document.pk)
+
+        view.get(request)
+
+        self.assertEqual(view.learning_model.__class__, TestModel)
+        self.assertEqual(view.object, self.document)
+
+    def test_post_sets_attributes(self):
+        """POST sets learning model and object attributes"""
+        request = self.factory.post('/')
+
+        view = self.setup_view(
+            BaseLearningModelLabellingView(),
+            request,
+            name=TestModel.get_name(),
+            pk=self.document.pk)
+
+        view.post(request)
+
+        self.assertEqual(view.learning_model.__class__, TestModel)
+        self.assertEqual(view.object, self.document)
