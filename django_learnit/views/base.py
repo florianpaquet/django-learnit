@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.http import Http404
 from django.views.generic import (
     FormView,
@@ -52,7 +53,7 @@ class LearningModelMixin(object):
                 'pk': document.pk
             })
         else:
-            # Todo: redirect to the model main page
+            # Maybe : add a message using django.contrib.messages
             url = reverse('django_learnit:learning-model-detail', kwargs={
                 'name': self.learning_model.get_name()
             })
