@@ -26,4 +26,4 @@ class ClassifierModel(LearningModel):
         """
         Predict classes for documents
         """
-        pass
+        raise NotImplementedError()

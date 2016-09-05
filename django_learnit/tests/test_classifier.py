@@ -51,9 +51,10 @@ class ClassifierModelTestCase(TestCase):
 
         self.assertEqual(TestClassifier().get_classes(), test_classes)
 
-    def test_predict_default(self):
-        """Returns None by default"""
-        self.assertIsNone(TestSingleLabelClassifierModel().predict(None))
+    def test_predict_raises_default(self):
+        """Raise NotImplementedError by default"""
+        with self.assertRaises(NotImplementedError):
+            self.assertIsNone(TestSingleLabelClassifierModel().predict(None))
 
 
 # -- Forms
