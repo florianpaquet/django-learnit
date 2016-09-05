@@ -136,6 +136,10 @@ class BaseLearningModelLabellingView(LearningModelMixin, DocumentMixin,
 
 
 class RandomUnlabelledDocumentRedirectView(LearningModelMixin, RedirectView):
+    """
+    Redirects to a random unlabelled document in the learning model
+    """
+    permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
         self.learning_model = self.get_learning_model()

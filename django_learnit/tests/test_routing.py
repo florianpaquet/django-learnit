@@ -52,7 +52,7 @@ class LearningModelURLRoutingTestCase(TestCase):
             'name': TestSingleLabelClassifierModel.get_name()
         })
 
-        self.assertRedirects(response, expected_url)
+        self.assertRedirects(response, expected_url, status_code=302)
 
     def test_redirect_to_random_unlabelled_document(self):
         """Redirects to a random unlabelled document for the classifier model"""
@@ -68,4 +68,4 @@ class LearningModelURLRoutingTestCase(TestCase):
             'pk': document.pk
         })
 
-        self.assertRedirects(response, expected_url)
+        self.assertRedirects(response, expected_url, status_code=302)
