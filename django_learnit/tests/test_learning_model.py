@@ -5,6 +5,7 @@ from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
 from ..views.base import LearningModelMixin
 
+from .factories import LabelledDocumentFactory
 from .models import Document
 from .learning_models import TestModel
 
@@ -62,6 +63,40 @@ class LearningModelTestCase(TestCase):
             pass
 
         self.assertFalse(TestModel().is_classifier())
+
+    def test_get_random_unlabelled_document_is_none_when_nothing_left(self):
+        """Returns None when everything is labelled"""
+        class TestModel(LearningModel):
+            name = 'testmodel'
+            queryset = Document.objects.all()
+
+        document = Document.objects.create()
+
+        LabelledDocumentFactory.create(
+            document=document, model_name=TestModel.get_name(), value='foo')
+        LabelledDocumentFactory.create(
+            document=document, model_name='othermodel', value='foo')
+
+        self.assertIsNone(TestModel().get_random_unlabelled_document())
+
+    def test_get_random_unlabelled_document(self):
+        """Returns a random unlabelled document"""
+        class TestModel(LearningModel):
+            name = 'testmodel'
+            queryset = Document.objects.all()
+
+        document1 = Document.objects.create()
+        document2 = Document.objects.create()
+        document3 = Document.objects.create()
+
+        LabelledDocumentFactory.create(
+            document=document1, model_name=TestModel.get_name(), value='foo')
+        LabelledDocumentFactory.create(
+            document=document2, model_name='othermodel', value='foo')
+
+        self.assertIn(
+            TestModel().get_random_unlabelled_document().pk,
+            [document2.pk, document3.pk])
 
 
 # -- Mixins

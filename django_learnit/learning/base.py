@@ -41,6 +41,30 @@ class LearningModel(object):
 
         return self.queryset.all()
 
+    def get_random_unlabelled_document(self):
+        """
+        Returns a random unlabelled document
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from ..models import LabelledDocument
+
+        queryset = self.get_queryset()
+
+        # Retrieve labelled IDs
+        labelled_ids = LabelledDocument.objects\
+            .filter(
+                document_content_type=ContentType.objects.get_for_model(queryset.model),
+                model_name=self.get_name())\
+            .values_list('document_id', flat=True)
+
+        # Return a random unlabelled document or None
+        try:
+            return queryset\
+                .exclude(pk__in=labelled_ids)\
+                .order_by('?')[0]
+        except IndexError:
+            return None
+
     def is_classifier(self):
         """
         Returns whether the model inherits from a classifier model or not
