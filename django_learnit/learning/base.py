@@ -1,7 +1,48 @@
 from ..exceptions import ImproperlyConfigured
 
 
-class LearningModel(object):
+class LearningModelBuilderMixin(object):
+    """
+    Adds top level model building methods.
+
+    Feature extraction, model definition and all machine learning related stuff
+    is up to the developer. We don't assume anything here, leaving it extendable.
+    """
+
+    def __init__(self):
+        """
+        Initialize the learning model
+        """
+        super(LearningModelBuilderMixin, self).__init__()
+        self.model = self.load_model()
+
+    def load_model(self):
+        """
+        Loads the model and returns it
+        """
+        pass
+
+    def save_model(self):
+        """
+        Saves the model
+        """
+        pass
+
+    def build_model(self, labelled_documents):
+        """
+        Build the model
+        """
+        raise NotImplementedError()
+
+    def build(self, labelled_documents):
+        """
+        Builds and saves the model
+        """
+        self.model = self.build_model(labelled_documents)
+        self.save_model()
+
+
+class LearningModel(LearningModelBuilderMixin):
     """
     Base learning model identified by a name
     and holding a document queryset

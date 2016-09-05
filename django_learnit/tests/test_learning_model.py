@@ -6,7 +6,9 @@ from django.test import (
 from django.views.generic import TemplateView
 
 from ..exceptions import ImproperlyConfigured
-from ..learning.base import LearningModel
+from ..learning.base import (
+    LearningModelBuilderMixin,
+    LearningModel)
 from ..views.base import LearningModelMixin
 from ..views.detail import LearningModelDetailView
 from ..views.list import LearningModelListView
@@ -190,6 +192,41 @@ class LearningModelMixinTestCase(TestCase):
         })
 
         self.assertEqual(self.view.get_random_unlabelled_document_url(), expected_url)
+
+
+class LearningModelBuilderMixinTestCase(TestCase):
+
+    def setUp(self):
+        self.mixin = LearningModelBuilderMixin()
+
+    def test_load_model_default(self):
+        """Returns None by default"""
+        self.assertIsNone(self.mixin.load_model())
+
+    def test_save_model_default(self):
+        """Returns None by default"""
+        self.assertIsNone(self.mixin.save_model())
+
+    def test_build_model_raises_default(self):
+        """Raises NotImplementedError by default"""
+        with self.assertRaises(NotImplementedError):
+            self.mixin.build_model(None)
+
+    def test_build_raises_default(self):
+        """Raises NotImplementedError by default"""
+        with self.assertRaises(NotImplementedError):
+            self.mixin.build(None)
+
+    def test_build_default(self):
+        """Returns None by default"""
+        class TestMixin(LearningModelBuilderMixin):
+            def build_model(self, labelled_documents):
+                return labelled_documents
+
+        mixin = TestMixin()
+
+        self.assertIsNone(mixin.build('foobar'))
+        self.assertEqual(mixin.model, 'foobar')
 
 
 # -- Views
