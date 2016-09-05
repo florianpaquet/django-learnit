@@ -129,3 +129,9 @@ class LearningModel(LearningModelBuilderMixin):
         """
         from .classifier import ClassifierModel
         return issubclass(self.__class__, ClassifierModel)
+
+    def predict(self, documents):
+        """
+        Predict output for documents
+        """
+        raise NotImplementedError()

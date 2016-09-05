@@ -21,9 +21,3 @@ class ClassifierModel(LearningModel):
             })
 
         return self.classes
-
-    def predict(self, documents):
-        """
-        Predict classes for documents
-        """
-        raise NotImplementedError()

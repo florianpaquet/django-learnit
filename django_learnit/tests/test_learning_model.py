@@ -106,6 +106,11 @@ class LearningModelTestCase(TestCase):
             TestModel().get_random_unlabelled_document().pk,
             [document2.pk, document3.pk])
 
+    def test_predict_raises_default(self):
+        """Raise NotImplementedError by default"""
+        with self.assertRaises(NotImplementedError):
+            self.assertIsNone(TestSingleLabelClassifierModel().predict(None))
+
 
 # -- Mixins
 
