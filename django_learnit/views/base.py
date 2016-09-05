@@ -1,5 +1,4 @@
 from django.core.urlresolvers import reverse
-from django.contrib import messages
 from django.http import Http404
 from django.views.generic import (
     FormView,
