@@ -24,7 +24,7 @@ class LearningModelBuilderMixin(object):
         from ..models import LabelledDocument
 
         return LabelledDocument.objects\
-            .filter(model_name=self.learning_model.get_name())
+            .filter(model_name=self.get_name())
 
     def load_model(self):
         """
