@@ -3,13 +3,11 @@ from ..exceptions import ImproperlyConfigured
 from .base import LearningModel
 
 
-class ClassifierModel(LearningModel):
+class ClassificationMixin(object):
     """
-    Base classifier learning model that outputs one or
-    more labels for each document
+    Classifier mixin holding available classes for the learning model
     """
     classes = ()
-    multilabel = False
 
     def get_classes(self):
         """
@@ -21,3 +19,11 @@ class ClassifierModel(LearningModel):
             })
 
         return self.classes
+
+
+class ClassifierModel(ClassificationMixin, LearningModel):
+    """
+    Base classifier learning model that outputs one or
+    more labels for each document
+    """
+    multilabel = False
