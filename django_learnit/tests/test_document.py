@@ -136,12 +136,28 @@ class LabelledDocumentFormMixinTestView(LabelledDocumentFormMixin, FormView):
 class LabelledDocumentFormMixinTestCase(TestCase):
 
     def setUp(self):
+        self.factory = RequestFactory()
+        self.request = self.factory.get('/')
+
         self.document = Document.objects.create()
         self.learning_model = TestModel()
 
         self.view = LabelledDocumentFormMixinTestView()
+        self.view.request = self.request
+        self.view.form_class = forms.Form
         self.view.object = self.document
         self.view.learning_model = self.learning_model
+
+    def test_get_context_data(self):
+        """Adds the template name in the context"""
+        target_template_name = 'django_learnit/document_labelling/%(name)s_detail.html' % {
+            'name': TestModel.get_name()
+        }
+
+        self.view.learning_model = TestModel()
+        context = self.view.get_context_data()
+
+        self.assertEqual(context['document_detail_template_name'], target_template_name)
 
     def test_get_initial_without_labelled_document(self):
         """Initial data is empty"""

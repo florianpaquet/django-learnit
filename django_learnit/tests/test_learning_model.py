@@ -131,15 +131,14 @@ class LearningModelMixinTestCase(TestCase):
             self.assertEqual(view.get_learning_model())
 
     def test_get_context_data(self):
-        """Adds the template name in the context"""
-        target_template_name = 'learning_models/%(name)s.html' % {
-            'name': TestModel.get_name()
-        }
-
+        """Adds learning model data in the context"""
         self.view.learning_model = TestModel()
         context = self.view.get_context_data()
 
-        self.assertEqual(context['document_detail_template_name'], target_template_name)
+        self.assertEqual(
+            context['learning_model'], self.view.learning_model)
+        self.assertEqual(
+            context['learning_model_name'], self.view.learning_model.get_name())
 
     def test_get_random_unlabelled_document_url_when_nothing_left(self):
         """Default route when nothing is left"""
@@ -188,8 +187,8 @@ class LearningModelDetailViewTestCase(TestCase):
         self.assertEqual(
             template_names,
             [
-                'django_learnit/foobarmodel_detail.html',
-                'django_learnit/detail.html'
+                'django_learnit/learning_models/foobarmodel_detail.html',
+                'django_learnit/learning_models/detail.html'
             ]
         )
 

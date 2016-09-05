@@ -18,8 +18,8 @@ class LearningModelDetailView(LearningModelMixin, TemplateView):
         to easily allow template overriding
         """
         return [
-            'django_learnit/%(name)s_detail.html' % {
+            'django_learnit/learning_models/%(name)s_detail.html' % {
                 'name': self.learning_model.get_name()
             },
-            'django_learnit/detail.html'
+            'django_learnit/learning_models/detail.html'
         ]

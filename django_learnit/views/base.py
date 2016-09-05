@@ -29,12 +29,12 @@ class LearningModelMixin(object):
 
     def get_context_data(self, **kwargs):
         """
-        Adds the document detail template name for the learning model
+        Adds LearningModel data in the context
         """
         context = super(LearningModelMixin, self).get_context_data(**kwargs)
-        context['document_detail_template_name'] = 'learning_models/%(name)s.html' % {
-            'name': self.learning_model.get_name()
-        }
+
+        context['learning_model'] = self.learning_model
+        context['learning_model_name'] = self.learning_model.get_name()
 
         return context
 
@@ -74,6 +74,17 @@ class LabelledDocumentFormMixin(object):
     LabelledDocument form mixin providing initial data &
     post success action.
     """
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds the document detail template name for the learning model
+        """
+        context = super(LabelledDocumentFormMixin, self).get_context_data(**kwargs)
+        context['document_detail_template_name'] = 'django_learnit/document_labelling/%(name)s_detail.html' % {
+            'name': self.learning_model.get_name()
+        }
+
+        return context
 
     def get_initial(self):
         """
