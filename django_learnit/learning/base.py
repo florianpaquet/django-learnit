@@ -41,9 +41,9 @@ class LearningModel(object):
 
         return self.queryset.all()
 
-    def get_random_unlabelled_document(self):
+    def get_unlabelled_documents_queryset(self):
         """
-        Returns a random unlabelled document
+        Returns the unlabelled documents queryset
         """
         from django.contrib.contenttypes.models import ContentType
         from ..models import LabelledDocument
@@ -57,10 +57,15 @@ class LearningModel(object):
                 model_name=self.get_name())\
             .values_list('document_id', flat=True)
 
+        return queryset.exclude(pk__in=labelled_ids)
+
+    def get_random_unlabelled_document(self):
+        """
+        Returns a random unlabelled document
+        """
         # Return a random unlabelled document or None
         try:
-            return queryset\
-                .exclude(pk__in=labelled_ids)\
+            return self.get_unlabelled_documents_queryset()\
                 .order_by('?')[0]
         except IndexError:
             return None

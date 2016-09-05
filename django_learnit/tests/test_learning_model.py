@@ -140,6 +140,25 @@ class LearningModelMixinTestCase(TestCase):
         self.assertEqual(
             context['learning_model_name'], self.view.learning_model.get_name())
 
+    def test_get_unlabelled_documents_queryset(self):
+        """Returns unlabelled documents"""
+        learning_model = TestModel()
+
+        d1 = Document.objects.create()
+        d2 = Document.objects.create()
+        d3 = Document.objects.create()
+
+        LabelledDocumentFactory.create(
+            document=d1, model_name=learning_model.get_name(), value='foo')
+        LabelledDocumentFactory.create(
+            document=d2, model_name='other', value='foo')
+        LabelledDocumentFactory.create(
+            document=d3, model_name='baz', value='foo')
+
+        self.assertEqual(
+            [d for d in learning_model.get_unlabelled_documents_queryset()],
+            [d2, d3])
+
     def test_get_random_unlabelled_document_url_when_nothing_left(self):
         """Detail view when nothing is left"""
         self.view.learning_model = TestModel()
