@@ -214,19 +214,44 @@ class LearningModelBuilderMixinTestCase(TestCase):
 
     def test_build_raises_default(self):
         """Raises NotImplementedError by default"""
+        self.mixin.learning_model = TestModel()
+
         with self.assertRaises(NotImplementedError):
-            self.mixin.build(None)
+            self.mixin.build()
 
     def test_build_default(self):
         """Returns None by default"""
         class TestMixin(LearningModelBuilderMixin):
             def build_model(self, labelled_documents):
-                return labelled_documents
+                return 'foobar'
 
         mixin = TestMixin()
+        mixin.learning_model = TestModel()
 
-        self.assertIsNone(mixin.build('foobar'))
+        self.assertIsNone(mixin.build())
         self.assertEqual(mixin.model, 'foobar')
+
+    def test_get_labelled_documents_queryset(self):
+        """Returns the LabelledDocument queryset for the model"""
+        class TestModel(LearningModel):
+            name = 'foo'
+
+        d1 = Document.objects.create()
+        ld1 = LabelledDocumentFactory.create(document=d1, model_name='foo')
+        LabelledDocumentFactory.create(document=d1, model_name='bar')
+
+        d2 = Document.objects.create()
+        LabelledDocumentFactory.create(document=d2, model_name='bar')
+
+        d3 = Document.objects.create()
+        ld2 = LabelledDocumentFactory.create(document=d3, model_name='foo')
+        LabelledDocumentFactory.create(document=d3, model_name='baz')
+
+        self.mixin.learning_model = TestModel()
+        self.assertEqual(
+            [ld for ld in self.mixin.get_labelled_documents_queryset()],
+            [ld1, ld2])
+
 
 
 # -- Views

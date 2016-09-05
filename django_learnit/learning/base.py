@@ -16,6 +16,16 @@ class LearningModelBuilderMixin(object):
         super(LearningModelBuilderMixin, self).__init__()
         self.model = self.load_model()
 
+    def get_labelled_documents_queryset(self):
+        """
+        Returns LabelledDocument queryset for the learning model
+        """
+        from django.contrib.contenttypes.models import ContentType
+        from ..models import LabelledDocument
+
+        return LabelledDocument.objects\
+            .filter(model_name=self.learning_model.get_name())
+
     def load_model(self):
         """
         Loads the model and returns it
@@ -34,10 +44,12 @@ class LearningModelBuilderMixin(object):
         """
         raise NotImplementedError()
 
-    def build(self, labelled_documents):
+    def build(self):
         """
         Builds and saves the model
         """
+        labelled_documents = self.get_labelled_documents_queryset()
+
         self.model = self.build_model(labelled_documents)
         self.save_model()
 
