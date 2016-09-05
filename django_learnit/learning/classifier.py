@@ -3,7 +3,7 @@ from ..exceptions import ImproperlyConfigured
 from .base import LearningModel
 
 
-class ClassificationMixin(object):
+class GenericClassifierMixin(object):
     """
     Classifier mixin holding available classes for the learning model
     """
@@ -21,7 +21,7 @@ class ClassificationMixin(object):
         return self.classes
 
 
-class ClassifierModel(ClassificationMixin, LearningModel):
+class ClassifierModel(GenericClassifierMixin, LearningModel):
     """
     Base classifier learning model that outputs one or
     more labels for each document

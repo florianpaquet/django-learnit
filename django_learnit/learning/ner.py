@@ -1,8 +1,8 @@
 from .base import LearningModel
-from .classifier import ClassifierMixin
+from .classifier import GenericClassifierMixin
 
 
-class NamedEntityRecognizerModel(ClassifierMixin, LearningModel):
+class NamedEntityRecognizerModel(GenericClassifierMixin, LearningModel):
     """
     TODO : Create a ClassificationMixin for stuff related to classes (NER shares
     classes with ClassifierModel)

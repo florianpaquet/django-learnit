@@ -5,9 +5,9 @@ from ..forms.classifier import (
 from .base import BaseLearningModelLabellingView
 
 
-class ClassifierModelLabellingMixin(object):
+class GenericClassifierModelLabellingMixin(object):
     """
-    Mixin for a classifier model
+    Adds classes in context for a generic classifier model
     """
 
     def get_classes(self):
@@ -20,9 +20,22 @@ class ClassifierModelLabellingMixin(object):
         """
         Adds context data for classification
         """
-        context = super(ClassifierModelLabellingMixin, self).get_context_data(**kwargs)
-
+        context = super(GenericClassifierModelLabellingMixin, self).get_context_data(**kwargs)
         context['classes'] = self.get_classes()
+
+        return context
+
+
+class ClassifierModelLabellingMixin(GenericClassifierModelLabellingMixin):
+    """
+    Mixin for a classifier model
+    """
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds context data for classification
+        """
+        context = super(ClassifierModelLabellingMixin, self).get_context_data(**kwargs)
         context['multilabel'] = self.learning_model.multilabel
 
         return context
