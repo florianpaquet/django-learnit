@@ -9,6 +9,7 @@ from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
 from ..views.base import LearningModelMixin
 from ..views.detail import LearningModelDetailView
+from ..views.list import LearningModelListView
 
 from .factories import LabelledDocumentFactory
 from .models import Document
@@ -226,3 +227,21 @@ class LearningModelDetailViewTestCase(TestCase):
 
         self.view.get(request)
         self.assertEqual(self.view.learning_model.__class__, TestModel)
+
+
+class LearningModelListViewTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.view = LearningModelListView()
+
+    def test_get_context_data(self):
+        self.view.learning_model = TestModel()
+        context_data = self.view.get_context_data()
+
+        self.assertIn('learning_models', context_data)
+
+        learning_models = context_data['learning_models']
+        self.assertIn('test_singlelabel_classifier', learning_models)
+        self.assertIn('test_multilabel_classifier', learning_models)
+        self.assertIn('testmodel', learning_models)

@@ -1,0 +1,3 @@
+{% for learning_model_name, learning_model in learning_models.items %}
+  <a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}">{{ learning_model }}</a>
+{% endfor %}
