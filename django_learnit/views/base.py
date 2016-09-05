@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-
+from django.http import Http404
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 
@@ -16,12 +16,16 @@ class LearningModelMixin(object):
         """
         Returns the learning model corresponding to the name
         in the URL pattern.
-
-        Model existence is checked on the dispatch view
-        `labelleling_view_dispatch` so we don't need to check here again.
         """
         model_name = self.kwargs['name']
-        return get_learning_model(model_name)
+        learning_model = get_learning_model(model_name)
+
+        if not learning_model:
+            raise Http404("Learning model `%(name)s` is not registered" % {
+                'name': model_name
+            })
+
+        return learning_model
 
     def get_context_data(self, **kwargs):
         """

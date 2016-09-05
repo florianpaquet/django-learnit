@@ -1,10 +1,14 @@
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.http import Http404
+from django.test import (
+    TestCase,
+    RequestFactory)
 from django.views.generic import TemplateView
 
 from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
 from ..views.base import LearningModelMixin
+from ..views.detail import LearningModelDetailView
 
 from .factories import LabelledDocumentFactory
 from .models import Document
@@ -117,6 +121,15 @@ class LearningModelMixinTestCase(TestCase):
         """Learning model is returned"""
         self.assertEqual(self.view.get_learning_model().__class__, TestModel)
 
+    def test_get_learning_model_raises_when_model_is_not_registered(self):
+        """Raise HTTP 404 when model doesn't exist"""
+        view = LearningModelMixinTestView(kwargs={
+            'name': 'iamnotregistered'
+        })
+
+        with self.assertRaises(Http404):
+            self.assertEqual(view.get_learning_model())
+
     def test_get_context_data(self):
         """Adds the template name in the context"""
         target_template_name = 'learning_models/%(name)s.html' % {
@@ -154,3 +167,40 @@ class LearningModelMixinTestCase(TestCase):
         })
 
         self.assertEqual(self.view.get_random_unlabelled_document_url(), expected_url)
+
+
+# -- Views
+
+class LearningModelDetailViewTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.view = LearningModelDetailView()
+
+    def test_get_template_names(self):
+        """Adds a learning model specific template name"""
+        class TestModel(LearningModel):
+            name = 'foobarmodel'
+
+        self.view.learning_model = TestModel()
+        template_names = self.view.get_template_names()
+
+        self.assertEqual(
+            template_names,
+            [
+                'django_learnit/foobarmodel_detail.html',
+                'django_learnit/detail.html'
+            ]
+        )
+
+    def test_get_sets_attributes(self):
+        """GET method sets view attributes"""
+        request = self.factory.get('/')
+
+        self.view.kwargs = {
+            'name': TestModel.get_name()
+        }
+        self.view.request = request
+
+        self.view.get(request)
+        self.assertEqual(self.view.learning_model.__class__, TestModel)
