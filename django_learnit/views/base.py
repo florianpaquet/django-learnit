@@ -110,3 +110,6 @@ class BaseLearningModelLabellingView(LearningModelMixin, DocumentMixin,
         self.learning_model = self.get_learning_model()
         self.object = self.get_object()
         return super(BaseLearningModelLabellingView, self).post(*args, **kwargs)
+
+    def get_success_url(self):
+        return self.get_random_unlabelled_document_url()

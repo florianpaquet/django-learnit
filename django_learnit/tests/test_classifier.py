@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.test import (
     TestCase,
     RequestFactory)
@@ -10,11 +11,14 @@ from ..forms.classifier import (
     SingleLabelClassifierForm,
     MultiLabelClassifierForm)
 from ..learning.classifier import ClassifierModel
+from ..models import LabelledDocument
 from ..views.classifier import ClassifierModelLabellingMixin
 
+from .factories import LabelledDocumentFactory
 from .learning_models import (
     TestSingleLabelClassifierModel,
     TestMultiLabelClassifierModel)
+from .models import Document
 
 
 # -- Model
@@ -121,3 +125,78 @@ class ClassifierModelLabellingMixinTestCase(TestCase):
         kwargs = view.get_form_kwargs()
 
         self.assertEqual(kwargs['classes'], learning_model.get_classes())
+
+
+# -- Functional
+
+class ClassifierModelFunctionalTestCase(TestCase):
+
+    def test_create_labelled_document(self):
+        """LabelledDocument is created for new document"""
+        model_name = TestSingleLabelClassifierModel.get_name()
+
+        document = Document.objects.create()
+        self.assertFalse(LabelledDocument.objects.exists())
+
+        url = reverse('django_learnit:document-labelling', kwargs={
+            'name': model_name,
+            'pk': document.pk
+        })
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context['form']
+        self.assertIsInstance(form, SingleLabelClassifierForm)
+
+        data = form.initial
+        data['label'] = '1'
+
+        self.client.post(url, data)
+
+        labelled_document = LabelledDocument.objects.get_for_document(
+            document, model_name)
+
+        expected_value = LabelledDocument.serialize_value({
+            'label': '1'
+        })
+
+        self.assertEqual(labelled_document.value, expected_value)
+
+    def test_update_labelled_document(self):
+        """LabelledDocument is updated when existing"""
+        model_name = TestMultiLabelClassifierModel.get_name()
+
+        document = Document.objects.create()
+
+        labelled_document = LabelledDocumentFactory.create(
+            document=document,
+            model_name=model_name,
+            value=LabelledDocument.serialize_value({
+                'label': ['1', '0']
+            }))
+        self.assertEqual(LabelledDocument.objects.count(), 1)
+
+        url = reverse('django_learnit:document-labelling', kwargs={
+            'name': model_name,
+            'pk': document.pk
+        })
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context['form']
+        self.assertIsInstance(form, MultiLabelClassifierForm)
+
+        data = form.initial
+        data['label'] = ['1']
+
+        self.client.post(url, data)
+        self.assertEqual(LabelledDocument.objects.count(), 1)
+
+        expected_value = LabelledDocument.serialize_value({
+            'label': ['1']
+        })
+
+        labelled_document = LabelledDocument.objects.get(pk=labelled_document.pk)
+        self.assertEqual(labelled_document.value, expected_value)
