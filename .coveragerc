@@ -1,4 +1,6 @@
 [run]
 source = django_learnit
-omit = django_learnit/tests/*
+omit =
+  django_learnit/tests/*
+  django_learnit/migrations/*
 branch = 1
