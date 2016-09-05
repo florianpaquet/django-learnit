@@ -1,6 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.views.generic import FormView
+from django.views.generic import (
+    FormView,
+    RedirectView)
 from django.views.generic.detail import SingleObjectMixin
 
 from ..library import get_learning_model
@@ -51,7 +53,9 @@ class LearningModelMixin(object):
             })
         else:
             # Todo: redirect to the model main page
-            url = '/'
+            url = reverse('django_learnit:learning-model-detail', kwargs={
+                'name': self.learning_model.get_name()
+            })
 
         return url
 
@@ -127,4 +131,11 @@ class BaseLearningModelLabellingView(LearningModelMixin, DocumentMixin,
         return super(BaseLearningModelLabellingView, self).post(*args, **kwargs)
 
     def get_success_url(self):
+        return self.get_random_unlabelled_document_url()
+
+
+class RandomUnlabelledDocumentRedirectView(LearningModelMixin, RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        self.learning_model = self.get_learning_model()
         return self.get_random_unlabelled_document_url()

@@ -141,14 +141,18 @@ class LearningModelMixinTestCase(TestCase):
             context['learning_model_name'], self.view.learning_model.get_name())
 
     def test_get_random_unlabelled_document_url_when_nothing_left(self):
-        """Default route when nothing is left"""
+        """Detail view when nothing is left"""
         self.view.learning_model = TestModel()
 
         document = Document.objects.create()
         LabelledDocumentFactory.create(
             document=document, model_name=self.view.learning_model.get_name())
 
-        self.assertEqual(self.view.get_random_unlabelled_document_url(), '/')
+        expected_url = reverse('django_learnit:learning-model-detail', kwargs={
+            'name': self.view.learning_model.get_name()
+        })
+
+        self.assertEqual(self.view.get_random_unlabelled_document_url(), expected_url)
 
     def test_get_random_unlabelled_document_url(self):
         """Document labelling URL is returned"""
