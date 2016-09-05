@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.views.generic import TemplateView
 
@@ -126,3 +127,30 @@ class LearningModelMixinTestCase(TestCase):
         context = self.view.get_context_data()
 
         self.assertEqual(context['document_detail_template_name'], target_template_name)
+
+    def test_get_random_unlabelled_document_url_when_nothing_left(self):
+        """Default route when nothing is left"""
+        self.view.learning_model = TestModel()
+
+        document = Document.objects.create()
+        LabelledDocumentFactory.create(
+            document=document, model_name=self.view.learning_model.get_name())
+
+        self.assertEqual(self.view.get_random_unlabelled_document_url(), '/')
+
+    def test_get_random_unlabelled_document_url(self):
+        """Document labelling URL is returned"""
+        self.view.learning_model = TestModel()
+
+        document1 = Document.objects.create()
+        document2 = Document.objects.create()
+
+        LabelledDocumentFactory.create(
+            document=document1, model_name=self.view.learning_model.get_name())
+
+        expected_url = reverse('django_learnit:document-labelling', kwargs={
+            'name': self.view.learning_model.get_name(),
+            'pk': document2.pk
+        })
+
+        self.assertEqual(self.view.get_random_unlabelled_document_url(), expected_url)

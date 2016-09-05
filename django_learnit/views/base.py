@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse
+
 from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 
@@ -31,6 +33,23 @@ class LearningModelMixin(object):
         }
 
         return context
+
+    def get_random_unlabelled_document_url(self):
+        """
+        Returns a random unlabelled document url for the learning model
+        """
+        document = self.learning_model.get_random_unlabelled_document()
+
+        if document:
+            url = reverse('django_learnit:document-labelling', kwargs={
+                'name': self.learning_model.get_name(),
+                'pk': document.pk
+            })
+        else:
+            # Todo: redirect to the model main page
+            url = '/'
+
+        return url
 
 
 class DocumentMixin(SingleObjectMixin):
