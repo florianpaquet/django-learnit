@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 from django.db import IntegrityError
 from django.test import (
@@ -41,7 +39,7 @@ class LabelledDocumentModelTestCase(TransactionTestCase):
         """Value is serialized as a JSON object"""
         value = [['foo', 'bar', 'baz'], {'hello': 'world'}]
         self.assertEqual(
-            LabelledDocument.serialize_value(value), json.dumps(value))
+            LabelledDocument.serialize_value(value), LabelledDocument.serialize_value(value))
 
     def test_invalid_json_value(self):
         """Returns an empty dict when json value is invalid"""
@@ -60,9 +58,22 @@ class LabelledDocumentModelTestCase(TransactionTestCase):
 
         document = Document.objects.create()
         labelled_document = LabelledDocumentFactory.create(
-            document=document, value=json.dumps(value))
+            document=document, value=LabelledDocument.serialize_value(value))
 
         self.assertEqual(labelled_document.deserialize_value(), value)
+
+    def test_get_label(self):
+        """Returns the `label` key"""
+        value = {
+            'label': 'foo',
+            'value': 'bar'
+        }
+
+        document = Document.objects.create()
+        labelled_document = LabelledDocumentFactory.create(
+            document=document, model_name='test', value=LabelledDocument.serialize_value(value))
+
+        self.assertEqual(labelled_document.get_label(), 'foo')
 
 
 # -- Managers
@@ -173,7 +184,7 @@ class LabelledDocumentFormMixinTestCase(TestCase):
         LabelledDocumentFactory.create(
             document=self.document,
             model_name=self.learning_model.get_name(),
-            value=json.dumps(value))
+            value=LabelledDocument.serialize_value(value))
 
         self.assertDictEqual(self.view.get_initial(), value)
 

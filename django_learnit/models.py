@@ -71,3 +71,9 @@ class LabelledDocument(models.Model):
             pass
 
         return {}
+
+    def get_label(self):
+        """
+        Returns the `label` from the value
+        """
+        return self.deserialize_value().get('label')
