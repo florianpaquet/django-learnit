@@ -1,12 +1,18 @@
 {% extends "django_learnit/labelling/base.html" %}
 
 {% block body %}
-<!-- {{ classes }}
-{{ tokens }} -->
 
-{% for token in tokens %}
-  <span class="token" data-index="{{ forloop.counter0 }}">{{ token }}</span>
-{% endfor %}
+<div class="tokens">
+  {% for token in tokens %}
+    <span class="token" data-index="{{ forloop.counter0 }}">{{ token }}</span>
+  {% endfor %}
+</div>
+
+<ul class="classes">
+  {% for class, display in classes %}
+    <li data-class="{{ class }}">{{ display }}</li>
+  {% endfor %}
+</ul>
 
 <form method="post">
   {% csrf_token %}
@@ -19,7 +25,12 @@
 
 <script>
   $(document).ready(function () {
+
+    var tokens = $('.token');
     var labels = $('select[name$="-label"]');
+
+    var startIndex = null,
+        endIndex = null;
 
     /**
      * Updates tokens `data-label` using form data
@@ -31,9 +42,49 @@
       });
     }
 
-    labels.change(function () {
-      // Update tokens on labels change
+    /**
+     * Sets labels for a selection range
+     */
+    function setLabels(start, end, label) {
+      for (var i = start; i <= end; i++) {
+        $(labels[i]).val(label);
+      }
       updateTokens();
+    }
+
+    // Update tokens on labels change
+    labels.change(function () {
+      updateTokens();
+    });
+
+    // Start selection
+    tokens.mousedown(function () {
+      var index = $(this).data('index');
+
+      startIndex = index;
+      endIndex = index;
+    });
+
+    // Update selection
+    tokens.mouseenter(function () {
+      if (startIndex !== null) {
+        endIndex = $(this).data('index');
+      }
+    });
+
+    // End selection
+    $(document).mouseup(function () {
+
+    });
+
+    // Set selection
+    $('.classes > li').click(function () {
+      if (startIndex !== null && endIndex !== null) {
+        var start = Math.min(startIndex, endIndex);
+        var end = Math.max(startIndex, endIndex);
+
+        setLabels(start, end, $(this).data('class'));
+      }
     });
 
     // Setup
