@@ -1,7 +1,9 @@
+from functools import (
+    partial,
+    wraps)
 from django.forms import formset_factory
 
 from ..forms.classifier import SingleLabelClassifierForm
-from ..models import LabelledDocument
 
 from .base import BaseLearningModelLabellingView
 from .classifier import GenericClassifierModelLabellingMixin
@@ -29,23 +31,10 @@ class NamedEntityRecognizerModelLabellingMixin(GenericClassifierModelLabellingMi
         n_tokens = len(self.tokens)
 
         return formset_factory(
-            SingleLabelClassifierForm,
+            wraps(SingleLabelClassifierForm)(partial(SingleLabelClassifierForm, classes=self.get_classes())),
             min_num=n_tokens,
             max_num=n_tokens,
             extra=0)
-
-    def get_form_kwargs(self):
-        """
-        Adds model classes and initial data to the formset form kwargs
-        """
-        kwargs = super(NamedEntityRecognizerModelLabellingMixin, self).get_form_kwargs()
-
-        # Set formset form kwargs
-        kwargs['form_kwargs'] = {
-            'classes': self.get_classes()
-        }
-
-        return kwargs
 
     def get_initial(self):
         """

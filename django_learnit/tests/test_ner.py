@@ -95,7 +95,7 @@ class NamedEntityRecognizerModelLabellingMixinTestCase(TestCase):
         form_class = self.view.get_form_class()
 
         self.assertEqual(form_class.__name__, 'SingleLabelClassifierFormFormSet')
-        self.assertEqual(form_class.form, SingleLabelClassifierForm)
+        self.assertEqual(form_class().form().__class__, SingleLabelClassifierForm)
 
     def test_get_initial_default(self):
         """Returns a list of outside labels dicts"""
