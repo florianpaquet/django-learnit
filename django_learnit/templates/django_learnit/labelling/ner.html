@@ -1,8 +1,44 @@
-{{ classes }}
-{{ tokens }}
+{% extends "django_learnit/labelling/base.html" %}
+
+{% block body %}
+<!-- {{ classes }}
+{{ tokens }} -->
+
+{% for token in tokens %}
+  <span class="token" data-index="{{ forloop.counter0 }}">{{ token }}</span>
+{% endfor %}
 
 <form method="post">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit">
+  {% csrf_token %}
+  {% for label_form in form %}
+    {{ label_form.label }}
+  {% endfor %}
+  {{ form.management_form }}
+  <input type="submit">
 </form>
+
+<script>
+  $(document).ready(function () {
+    var labels = $('select[name$="-label"]');
+
+    /**
+     * Updates tokens `data-label` using form data
+     */
+    function updateTokens () {
+      $('.token').each(function (index) {
+        var label = $('select[name$="' + index + '-label"]').val();
+        $(this).attr('data-label', label);
+      });
+    }
+
+    labels.change(function () {
+      // Update tokens on labels change
+      updateTokens();
+    });
+
+    // Setup
+    updateTokens();
+
+  });
+</script>
+{% endblock body %}

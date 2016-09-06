@@ -3,7 +3,7 @@ from functools import (
     wraps)
 from django.forms import formset_factory
 
-from ..forms.classifier import SingleLabelClassifierForm
+from ..forms.ner import NamedEntityRecognizerForm
 
 from .base import BaseLearningModelLabellingView
 from .classifier import GenericClassifierModelLabellingMixin
@@ -26,12 +26,12 @@ class NamedEntityRecognizerModelLabellingMixin(GenericClassifierModelLabellingMi
 
     def get_form_class(self):
         """
-        Returns the `SingleLabelClassifierForm` formset
+        Returns the `NamedEntityRecognizerForm` formset
         """
         n_tokens = len(self.tokens)
 
         return formset_factory(
-            wraps(SingleLabelClassifierForm)(partial(SingleLabelClassifierForm, classes=self.get_classes())),
+            wraps(NamedEntityRecognizerForm)(partial(NamedEntityRecognizerForm, classes=self.get_classes())),
             min_num=n_tokens,
             max_num=n_tokens,
             extra=0)

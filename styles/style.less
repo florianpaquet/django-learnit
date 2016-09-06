@@ -1,0 +1,34 @@
+@import 'https://fonts.googleapis.com/css?family=Droid+Serif:400,700|Inconsolata:400,700';
+
+body {
+  margin: 0 auto;
+  padding: 0;
+
+  background: #EEE;
+
+  font-family: 'Droid Serif', serif;
+  font-size: 16px;
+  font-weight: 400;
+
+  display: flex;
+}
+
+.token {
+  position: relative;
+  display: inline-block;
+  padding: 6px 12px;
+
+  background: #FFF;
+
+  border: 1px solid #CCC;
+  border-radius: 3px;
+
+  font-family: 'Inconsolata', monospace;
+
+  cursor: pointer;
+  user-select: none;
+
+  & + .token {
+    margin-left: 3px;
+  }
+}

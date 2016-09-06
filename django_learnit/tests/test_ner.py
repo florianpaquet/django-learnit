@@ -4,7 +4,7 @@ from django.test import (
     RequestFactory)
 from django.views.generic import FormView
 
-from ..forms.classifier import SingleLabelClassifierForm
+from ..forms.ner import NamedEntityRecognizerForm
 from ..learning.ner import NamedEntityRecognizerModel
 from ..views.ner import NamedEntityRecognizerModelLabellingMixin
 from ..models import LabelledDocument
@@ -90,12 +90,12 @@ class NamedEntityRecognizerModelLabellingMixinTestCase(TestCase):
         self.assertEqual(context['tokens'], ['foo', 'bar'])
 
     def test_get_form_class(self):
-        """Returns a SingleLabelClassifierForm formset"""
+        """Returns a NamedEntityRecognizerForm formset"""
         self.view.tokens = []
         form_class = self.view.get_form_class()
 
-        self.assertEqual(form_class.__name__, 'SingleLabelClassifierFormFormSet')
-        self.assertEqual(form_class().form().__class__, SingleLabelClassifierForm)
+        self.assertEqual(form_class.__name__, 'NamedEntityRecognizerFormFormSet')
+        self.assertEqual(form_class().form().__class__, NamedEntityRecognizerForm)
 
     def test_get_initial_default(self):
         """Returns a list of outside labels dicts"""
