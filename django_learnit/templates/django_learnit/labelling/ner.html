@@ -1,7 +1,6 @@
 {% extends "django_learnit/labelling/base.html" %}
 
 {% block body %}
-
 <div class="tokens">
   {% for token in tokens %}
     <span class="token" data-index="{{ forloop.counter0 }}">{{ token }}</span>
@@ -52,6 +51,20 @@
       updateTokens();
     }
 
+    /**
+     * Adds selected feedback class on tokens
+     */
+    function updateSelectionFeedback () {
+      tokens.removeClass('selected');
+
+      var start = Math.min(startIndex, endIndex);
+      var end = Math.max(startIndex, endIndex);
+
+      for (var i = start; i <= end; i++) {
+        $(tokens[i]).addClass('selected');
+      }
+    }
+
     // Update tokens on labels change
     labels.change(function () {
       updateTokens();
@@ -63,28 +76,56 @@
 
       startIndex = index;
       endIndex = index;
+
+      updateSelectionFeedback();
     });
 
     // Update selection
     tokens.mouseenter(function () {
       if (startIndex !== null) {
         endIndex = $(this).data('index');
+        updateSelectionFeedback();
       }
     });
 
+    tokens.mouseleave(function () {
+
+    })
+
     // End selection
     $(document).mouseup(function () {
-
-    });
-
-    // Set selection
-    $('.classes > li').click(function () {
       if (startIndex !== null && endIndex !== null) {
         var start = Math.min(startIndex, endIndex);
         var end = Math.max(startIndex, endIndex);
 
-        setLabels(start, end, $(this).data('class'));
+        // Get end element position
+        var el = $(tokens[endIndex]);
+
+        $('ul.classes')
+          .attr({
+            'data-start': start,
+            'data-end': end
+          })
+          .css({
+            'top': (el.outerHeight() + el.offset()['top'] + 2) + 'px',
+            'left': el.offset()['left'] + 'px'
+          })
+          .show();
+
+        startIndex = null;
+        endIndex = null;
+      } else {
+        // Reset
+        $('ul.classes').hide();
+        tokens.removeClass('selected');
       }
+    });
+
+    // Set selection
+    $('.classes > li').click(function () {
+      var start = $(this).parent().attr('data-start');
+      var end = $(this).parent().attr('data-end');
+      setLabels(start, end, $(this).data('class'));
     });
 
     // Setup

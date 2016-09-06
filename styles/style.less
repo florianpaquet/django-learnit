@@ -28,6 +28,39 @@ body {
 
     cursor: pointer;
     user-select: none;
+
+    &.selected {
+      background: #CAEFFF;
+    }
   }
 
+}
+
+ul.classes {
+  position: absolute;
+  display: none;
+  margin: 0;
+  padding: 0;
+
+  background: #FFF;
+
+  border: 1px solid #CCC;
+  border-radius: 3px;
+
+  font-family: 'Inconsolata', monospace;
+  list-style: none;
+
+  cursor: pointer;
+
+  > li {
+    padding: 6px 12px;
+
+    &:hover {
+      background: #EEE;
+    }
+
+    & + li {
+      border-top: 1px dotted #CCC;
+    }
+  }
 }
