@@ -2,6 +2,7 @@ from django.http import Http404
 
 from ..library import get_learning_model
 from ..views.classifier import ClassifierModelLabellingView
+from ..views.ner import NamedEntityRecognizerModelLabellingView
 
 
 def labelleling_view_dispatch(request, name, pk):
@@ -18,3 +19,5 @@ def labelleling_view_dispatch(request, name, pk):
 
     if learning_model.is_classifier():
         return ClassifierModelLabellingView.as_view()(request, name=name, pk=pk)
+    elif learning_model.is_named_entity_recognizer():
+        return NamedEntityRecognizerModelLabellingView.as_view()(request, name=name, pk=pk)

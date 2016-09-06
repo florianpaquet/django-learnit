@@ -7,6 +7,8 @@ from django.views.generic import TemplateView
 
 from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
+from ..learning.classifier import ClassifierModel
+from ..learning.ner import NamedEntityRecognizerModel
 from ..views.base import LearningModelMixin
 from ..views.detail import LearningModelDetailView
 from ..views.list import LearningModelListView
@@ -67,10 +69,18 @@ class LearningModelTestCase(TestCase):
         self.assertEqual(TestModel().get_queryset().model, Document)
 
     def test_learning_model_type(self):
-        class TestModel(LearningModel):
-            pass
+        """Returns True / False depending on model type"""
+        model = LearningModel()
+        classifier_model = ClassifierModel()
+        ner_model = NamedEntityRecognizerModel()
 
-        self.assertFalse(TestModel().is_classifier())
+        self.assertFalse(model.is_classifier())
+        self.assertTrue(classifier_model.is_classifier())
+        self.assertFalse(ner_model.is_classifier())
+
+        self.assertFalse(model.is_named_entity_recognizer())
+        self.assertFalse(classifier_model.is_named_entity_recognizer())
+        self.assertTrue(ner_model.is_named_entity_recognizer())
 
     def test_get_random_unlabelled_document_is_none_when_nothing_left(self):
         """Returns None when everything is labelled"""

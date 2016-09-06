@@ -1,6 +1,7 @@
 from ..library import Library
 from ..learning.base import LearningModel
 from ..learning.classifier import ClassifierModel
+from ..learning.ner import NamedEntityRecognizerModel
 
 from .models import Document
 
@@ -36,3 +37,17 @@ class TestMultiLabelClassifierModel(ClassifierModel):
     multilabel = True
 
 register.learning_model(TestMultiLabelClassifierModel)
+
+
+class TestNamedEntityRecognizerModel(NamedEntityRecognizerModel):
+    name = 'test_ner'
+    queryset = Document.objects.all()
+    classes = (
+        ('DAY', 'Day'),
+        ('MONTH', 'Month')
+    )
+
+    def get_tokens(self, document):
+        return ['hello', 'world']
+
+register.learning_model(TestNamedEntityRecognizerModel)

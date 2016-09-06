@@ -2,10 +2,12 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from ..views.classifier import ClassifierModelLabellingView
+from ..views.ner import NamedEntityRecognizerModelLabellingView
 
 from .learning_models import (
     TestModel,
-    TestSingleLabelClassifierModel)
+    TestSingleLabelClassifierModel,
+    TestNamedEntityRecognizerModel)
 from .models import Document
 
 
@@ -40,6 +42,18 @@ class LearningModelURLRoutingTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.context_data['view'].__class__, ClassifierModelLabellingView)
+
+    def test_labelling_ner_model(self):
+        """Dispatch to a ner labelling view"""
+        document = Document.objects.create()
+        response = self.client.get(
+            reverse('django_learnit:document-labelling', kwargs={
+                'name': TestNamedEntityRecognizerModel.get_name(),
+                'pk': document.pk
+            }))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context_data['view'].__class__, NamedEntityRecognizerModelLabellingView)
 
     def test_redirect_to_main_model_page_when_no_unlabelled_document_left(self):
         """Redirects to main learning model page"""

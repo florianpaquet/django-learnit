@@ -96,11 +96,12 @@ class LabelledDocumentFormMixin(object):
         its related LabelledDocument
         """
         initial = {}
+
         labelled_document = LabelledDocument.objects.get_for_document(
             self.object, self.learning_model.get_name())
 
         if labelled_document:
-            initial.update(labelled_document.deserialize_value())
+            initial = labelled_document.deserialize_value()
 
         return initial
 

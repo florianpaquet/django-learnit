@@ -130,6 +130,13 @@ class LearningModel(LearningModelBuilderMixin):
         from .classifier import ClassifierModel
         return issubclass(self.__class__, ClassifierModel)
 
+    def is_named_entity_recognizer(self):
+        """
+        Returns whether the model inherits from a NER model or not
+        """
+        from .ner import NamedEntityRecognizerModel
+        return issubclass(self.__class__, NamedEntityRecognizerModel)
+
     def predict(self, documents):
         """
         Predict output for documents

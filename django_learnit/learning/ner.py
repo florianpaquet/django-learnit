@@ -4,9 +4,17 @@ from .classifier import GenericClassifierMixin
 
 class NamedEntityRecognizerModel(GenericClassifierMixin, LearningModel):
     """
-    TODO : Create a ClassificationMixin for stuff related to classes (NER shares
-    classes with ClassifierModel)
+    NER model that associates a label to each token
     """
+    outside_class = 'O'
+    outside_class_display = 'OUTSIDE'
+
+    def get_classes(self):
+        """
+        Returns classes with preprended oustide class
+        """
+        classes = super(NamedEntityRecognizerModel, self).get_classes()
+        return ((self.outside_class, self.outside_class_display),) + classes
 
     def get_tokens(self, document):
         """
