@@ -39,6 +39,9 @@ class LabelledDocument(models.Model):
     Generic labelled document related to any
     existing model instance in the application
     """
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
     model_name = models.TextField()
 
     # Generic relation

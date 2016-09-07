@@ -1,4 +1,5 @@
-{% extends "django_learnit/labelling/base.html" %}
+{% extends "django_learnit/base.html" %}
+{% load i18n %}
 
 {% block head %}
 <style>
@@ -15,32 +16,43 @@
 {% endblock head %}
 
 {% block body %}
-<div class="tokens">
-  {% for token in tokens %}
-    <span class="token" data-index="{{ forloop.counter0 }}">
-      {{ token }}
-      <div class="legend"></div>
-    </span>
+<div class="content">
+  <h1>Document #{{ document.pk }}</h1>
+
+  <ul class="class-legend">
+  {% for class, display, color in classes_colors %}
+    <li data-label="{{ class }}"><div class="legend"></div>{{ display }}</li>
   {% endfor %}
+  </ul>
+
+  <div class="tokens">
+    {% for token in tokens %}
+      <span class="token" data-index="{{ forloop.counter0 }}">
+        {{ token }}
+        <div class="legend"></div>
+      </span>
+    {% endfor %}
+  </div>
+
+  <ul class="classes">
+    {% for class, display in classes %}
+      <li data-label="{{ class }}">
+        {{ display }}
+        <div class="legend"></div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <form method="post">
+    {% csrf_token %}
+    {% for label_form in form %}
+      {{ label_form.label.as_hidden }}
+    {% endfor %}
+    {{ form.management_form }}
+    <input type="submit" value="{% trans 'Save and next' %}">
+  </form>
 </div>
 
-<ul class="classes">
-  {% for class, display in classes %}
-    <li data-label="{{ class }}">
-      {{ display }}
-      <div class="legend"></div>
-    </li>
-  {% endfor %}
-</ul>
-
-<form method="post">
-  {% csrf_token %}
-  {% for label_form in form %}
-    {{ label_form.label.as_hidden }}
-  {% endfor %}
-  {{ form.management_form }}
-  <input type="submit">
-</form>
 
 <script>
   $(document).ready(function () {
