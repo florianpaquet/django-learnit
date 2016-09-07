@@ -36,7 +36,7 @@
 <form method="post">
   {% csrf_token %}
   {% for label_form in form %}
-    {{ label_form.label }}
+    {{ label_form.label.as_hidden }}
   {% endfor %}
   {{ form.management_form }}
   <input type="submit">
@@ -46,7 +46,7 @@
   $(document).ready(function () {
 
     var tokens = $('.token');
-    var labels = $('select[name$="-label"]');
+    var labels = $('input[name$="-label"]');
 
     var startIndex = null,
         endIndex = null;
@@ -56,9 +56,12 @@
      */
     function updateTokens () {
       $('.token').each(function (index) {
-        var label = $('select[name$="' + index + '-label"]').val();
+        var label = $('input[name$="' + index + '-label"]').val();
         $(this).attr('data-label', label);
       });
+
+      // Focus submit to allow quick form submit with Enter
+      $('input[type="submit"]').focus();
     }
 
     /**
@@ -138,6 +141,7 @@
         // Reset
         $('ul.classes').hide();
         tokens.removeClass('selected');
+        $('input[type="submit"]').focus();
       }
     });
 
