@@ -20,7 +20,8 @@ class NamedEntityRecognizerModelTestCase(TestCase):
 
     class NERModel(NamedEntityRecognizerModel):
         classes = (
-            ('TEST', 'test'),
+            ('TEST', 'test', '#FF0000'),
+            ('OTHER', 'other')
         )
 
     def setUp(self):
@@ -29,8 +30,9 @@ class NamedEntityRecognizerModelTestCase(TestCase):
     def test_default_outside_class_is_added_to_classes(self):
         """Outside class is added"""
         expected = (
-            ('O', 'OUTSIDE'),
-            ('TEST', 'test')
+            ('O', 'Outside'),
+            ('TEST', 'test'),
+            ('OTHER', 'other')
         )
         self.assertEqual(self.model.get_classes(), expected)
 
@@ -41,7 +43,8 @@ class NamedEntityRecognizerModelTestCase(TestCase):
 
         expected = (
             ('NOPE', 'Nope'),
-            ('TEST', 'test')
+            ('TEST', 'test'),
+            ('OTHER', 'other')
         )
 
         self.assertEqual(self.model.get_classes(), expected)
@@ -50,6 +53,17 @@ class NamedEntityRecognizerModelTestCase(TestCase):
         """Raise NotImplementedError by default"""
         with self.assertRaises(NotImplementedError):
             self.model.get_tokens(None)
+
+    def test_get_classes_with_colors(self):
+        """Returns classes with colors"""
+        expected = (
+            ('O', 'Outside', self.model.outside_color),
+            ('TEST', 'test', '#FF0000'),
+            ('OTHER', 'other', self.model.default_colors[0])
+        )
+        classes_colors = self.model.get_classes_with_colors()
+
+        self.assertEqual(classes_colors, expected)
 
 
 # -- Mixins
@@ -87,6 +101,8 @@ class NamedEntityRecognizerModelLabellingMixinTestCase(TestCase):
         context = self.view.get_context_data()
 
         self.assertEqual(context['classes'], self.learning_model.get_classes())
+        self.assertEqual(
+            context['classes_colors'], self.learning_model.get_classes_with_colors())
         self.assertEqual(context['tokens'], ['foo', 'bar'])
 
     def test_get_form_class(self):

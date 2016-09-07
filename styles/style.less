@@ -2,7 +2,7 @@
 
 body {
   margin: 0 auto;
-  padding: 0;
+  padding: 10px;
 
   background: #EEE;
 
@@ -28,9 +28,20 @@ body {
 
     cursor: pointer;
     user-select: none;
+    overflow: hidden;
 
     &.selected {
       background: #CAEFFF;
+    }
+
+    > .legend {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      height: 12px;
+      width: 12px;
+
+      transform: rotate(45deg);
     }
   }
 
@@ -51,9 +62,19 @@ ul.classes {
   list-style: none;
 
   cursor: pointer;
+  overflow: hidden;
 
   > li {
-    padding: 6px 12px;
+    position: relative;
+    padding: 6px 12px 6px 17px;
+
+    > .legend {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 5px;
+    }
 
     &:hover {
       background: #EEE;

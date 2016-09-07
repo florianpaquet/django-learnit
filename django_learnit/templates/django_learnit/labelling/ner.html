@@ -1,15 +1,35 @@
 {% extends "django_learnit/labelling/base.html" %}
 
+{% block head %}
+<style>
+{% for class, display, color in classes_colors %}
+  .token[data-label="{{ class }}"] {
+    border-color: {{ color }} !important;
+  }
+
+  [data-label="{{ class }}"] > .legend {
+    background: {{ color }} !important;
+  }
+{% endfor %}
+</style>
+{% endblock head %}
+
 {% block body %}
 <div class="tokens">
   {% for token in tokens %}
-    <span class="token" data-index="{{ forloop.counter0 }}">{{ token }}</span>
+    <span class="token" data-index="{{ forloop.counter0 }}">
+      {{ token }}
+      <div class="legend"></div>
+    </span>
   {% endfor %}
 </div>
 
 <ul class="classes">
   {% for class, display in classes %}
-    <li data-class="{{ class }}">{{ display }}</li>
+    <li data-label="{{ class }}">
+      {{ display }}
+      <div class="legend"></div>
+    </li>
   {% endfor %}
 </ul>
 
@@ -125,7 +145,7 @@
     $('.classes > li').click(function () {
       var start = $(this).parent().attr('data-start');
       var end = $(this).parent().attr('data-end');
-      setLabels(start, end, $(this).data('class'));
+      setLabels(start, end, $(this).data('label'));
     });
 
     // Setup

@@ -21,6 +21,7 @@ class NamedEntityRecognizerModelLabellingMixin(GenericClassifierModelLabellingMi
         context = super(NamedEntityRecognizerModelLabellingMixin, self)\
             .get_context_data(**kwargs)
         context['tokens'] = self.tokens
+        context['classes_colors'] = self.learning_model.get_classes_with_colors()
 
         return context
 
