@@ -158,6 +158,28 @@ class LearningModelMixinTestCase(TestCase):
         self.assertEqual(
             context['learning_model_name'], self.view.learning_model.get_name())
 
+    def test_get_labelled_documents_queryset(self):
+        """Returns the LabelledDocument queryset for the model"""
+        class TestModel(LearningModel):
+            name = 'foo'
+
+        model = TestModel()
+
+        d1 = Document.objects.create()
+        ld1 = LabelledDocumentFactory.create(document=d1, model_name='foo')
+        LabelledDocumentFactory.create(document=d1, model_name='bar')
+
+        d2 = Document.objects.create()
+        LabelledDocumentFactory.create(document=d2, model_name='bar')
+
+        d3 = Document.objects.create()
+        ld2 = LabelledDocumentFactory.create(document=d3, model_name='foo')
+        LabelledDocumentFactory.create(document=d3, model_name='baz')
+
+        self.assertEqual(
+            [ld for ld in model.get_labelled_documents_queryset()],
+            [ld1, ld2])
+
     def test_get_unlabelled_documents_queryset(self):
         """Returns unlabelled documents"""
         learning_model = TestModel()
@@ -246,28 +268,6 @@ class LearningModelBuilderMixinTestCase(TestCase):
 
         self.assertIsNone(model.build())
         self.assertEqual(model.model, 'foobar')
-
-    def test_get_labelled_documents_queryset(self):
-        """Returns the LabelledDocument queryset for the model"""
-        class TestModel(LearningModel):
-            name = 'foo'
-
-        model = TestModel()
-
-        d1 = Document.objects.create()
-        ld1 = LabelledDocumentFactory.create(document=d1, model_name='foo')
-        LabelledDocumentFactory.create(document=d1, model_name='bar')
-
-        d2 = Document.objects.create()
-        LabelledDocumentFactory.create(document=d2, model_name='bar')
-
-        d3 = Document.objects.create()
-        ld2 = LabelledDocumentFactory.create(document=d3, model_name='foo')
-        LabelledDocumentFactory.create(document=d3, model_name='baz')
-
-        self.assertEqual(
-            [ld for ld in model.get_labelled_documents_queryset()],
-            [ld1, ld2])
 
 
 # -- Views

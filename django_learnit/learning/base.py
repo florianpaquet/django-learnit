@@ -16,16 +16,6 @@ class LearningModelBuilderMixin(object):
         super(LearningModelBuilderMixin, self).__init__()
         self.model = self.load_model()
 
-    def get_labelled_documents_queryset(self):
-        """
-        Returns LabelledDocument queryset for the learning model
-        """
-        from django.contrib.contenttypes.models import ContentType
-        from ..models import LabelledDocument
-
-        return LabelledDocument.objects\
-            .filter(model_name=self.get_name())
-
     def load_model(self):
         """
         Loads the model and returns it
@@ -94,20 +84,23 @@ class LearningModel(LearningModelBuilderMixin):
 
         return self.queryset.all()
 
+    def get_labelled_documents_queryset(self):
+        """
+        Returns LabelledDocument documents queryset
+        """
+        from ..models import LabelledDocument
+
+        return LabelledDocument.objects\
+            .filter(model_name=self.get_name())
+
     def get_unlabelled_documents_queryset(self):
         """
         Returns the unlabelled documents queryset
         """
-        from django.contrib.contenttypes.models import ContentType
-        from ..models import LabelledDocument
-
         queryset = self.get_queryset()
 
         # Retrieve labelled IDs
-        labelled_ids = LabelledDocument.objects\
-            .filter(
-                document_content_type=ContentType.objects.get_for_model(queryset.model),
-                model_name=self.get_name())\
+        labelled_ids = self.get_labelled_documents_queryset()\
             .values_list('document_id', flat=True)
 
         return queryset.exclude(pk__in=labelled_ids)
