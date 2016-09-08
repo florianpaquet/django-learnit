@@ -41,7 +41,7 @@ class Library(object):
                 })
 
         # Add model to the library
-        self.learning_models[model_name] = model_class
+        self.learning_models[model_name] = model_class()
 
 
 def import_library(name):
@@ -78,23 +78,23 @@ def get_installed_libraries():
 
 def get_registered_learning_models(libraries):
     """
-    Returns a dict with registered learning models as (model_name: model_class)
+    Returns a dict with registered learning models as (model_name: model_obj)
     """
     learning_models = {}
 
     for library in libraries:
         register = import_library(library)
 
-        for model_name, model_class in register.learning_models.items():
+        for model_name, model_obj in register.learning_models.items():
             # Check model name is unique
             if model_name in learning_models:
                 raise DuplicateLearningModelName(
                     "%(cls)s uses '%(name)s' that is already exists in the model library" % {
-                        'cls': model_class.__name__,
+                        'cls': model_obj.__class__.__name__,
                         'name': model_name
                     })
 
-            learning_models[model_name] = model_class
+            learning_models[model_name] = model_obj
 
     return learning_models
 
@@ -107,6 +107,6 @@ def get_learning_model(learning_model_name):
     learning_models = app_config.learning_models
 
     if learning_model_name in learning_models:
-        return learning_models[learning_model_name]()
+        return learning_models[learning_model_name]
 
     return None

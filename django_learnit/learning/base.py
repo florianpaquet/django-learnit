@@ -9,13 +9,6 @@ class LearningModelBuilderMixin(object):
     is up to the developer. We don't assume anything here, leaving it extendable.
     """
 
-    def __init__(self):
-        """
-        Initialize the learning model
-        """
-        super(LearningModelBuilderMixin, self).__init__()
-        self.model = self.load_model()
-
     def load_model(self):
         """
         Loads the model and returns it

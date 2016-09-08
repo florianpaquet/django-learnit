@@ -52,8 +52,8 @@ class LibraryTestCase(TestCase):
         self.register.learning_model(OtherModel)
 
         self.assertEqual(len(self.register.learning_models), 2)
-        self.assertEqual(self.register.learning_models['testmodel'], TestModel)
-        self.assertEqual(self.register.learning_models['othermodel'], OtherModel)
+        self.assertEqual(self.register.learning_models['testmodel'].__class__, TestModel)
+        self.assertEqual(self.register.learning_models['othermodel'].__class__, OtherModel)
 
     def test_installed_libraries(self):
         """Returns installed libraries"""
@@ -72,7 +72,7 @@ class LibraryTestCase(TestCase):
         libraries = get_installed_libraries()
         learning_models = get_registered_learning_models(libraries)
         self.assertEqual(len(learning_models), 4)
-        self.assertEqual(learning_models['testmodel'], TestModel)
+        self.assertEqual(learning_models['testmodel'].__class__, TestModel)
 
     def test_get_non_existing_learning_model(self):
         """Returns None when model is not registered"""
