@@ -55,6 +55,17 @@ class LearningModelTestCase(TestCase):
 
         self.assertEqual(TestModel.get_name(), 'modelname')
 
+    def test_get_verbose_name(self):
+        """Returns the verbose name or class name"""
+        class DemoModel(LearningModel):
+            pass
+
+        model = DemoModel()
+        self.assertEqual(model.get_verbose_name(), 'DemoModel')
+
+        model.verbose_name = 'SomeModel'
+        self.assertEqual(model.get_verbose_name(), 'SomeModel')
+
     def test_get_queryset_raises_when_not_set(self):
         """Raise exception when queryset is not set"""
         class TestModel(LearningModel):

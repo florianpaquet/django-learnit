@@ -1,147 +1,150 @@
-@import 'https://fonts.googleapis.com/css?family=Droid+Serif:400,700|Inconsolata:400,700';
+// @import 'https://fonts.googleapis.com/css?family=Droid+Serif:400,700|Inconsolata:400,700';
 
-html, body {
-  height: 100%;
-}
+// html, body {
+//   height: 100%;
+// }
 
-body {
-  background: #F3F3F3;
+// body {
+//   // background: #F3F3F3;
 
-  font-family: 'Droid Serif', serif;
-  // font-size: 16px;
-}
+//   // font-family: 'Droid Serif', serif;
+//   // font-size: 16px;
+// }
 
-.container {
-  height: 100%;
+// // .container {
+// //   height: 100%;
 
-  padding: 20px;
+// //   padding: 20px;
 
-  border-right: 1px solid #DDD;
-  border-left: 1px solid #DDD;
+// //   border-right: 1px solid #DDD;
+// //   border-left: 1px solid #DDD;
 
-  background: #EBEBEB;
-}
+// //   background: #EBEBEB;
+// // }
 
-h1 {
-  margin: 0 0 15px 0;
-  padding: 0 0 10px 0;
+@import "model-list.less";
+@import "model-detail.less";
 
-  border-bottom: 1px dotted #BBB;
+// h1 {
+//   margin: 0 0 15px 0;
+//   padding: 0 0 10px 0;
 
-  font-size: 26px;
-}
+//   border-bottom: 1px dotted #BBB;
 
-form {
-  margin: 15px 0 0 0;
-  padding: 15px 0 0 0;
+//   font-size: 26px;
+// }
 
-  border-top: 1px dotted #BBB;
+// form {
+//   margin: 15px 0 0 0;
+//   padding: 15px 0 0 0;
 
-  text-align: center;
-}
+//   border-top: 1px dotted #BBB;
 
-.class-legend {
-  margin: 0 0 15px 0;
-  padding: 0 0 15px 0;
+//   text-align: center;
+// }
 
-  border-bottom: 1px dotted #BBB;
+// .class-legend {
+//   margin: 0 0 15px 0;
+//   padding: 0 0 15px 0;
 
-  list-style: none;
+//   border-bottom: 1px dotted #BBB;
 
-  font-family: 'Inconsolata', monospace;
-  font-size: 14px;
+//   list-style: none;
 
-  > li {
-    position: relative;
-    display: inline-block;
-    padding-left: 15px;
+//   font-family: 'Inconsolata', monospace;
+//   font-size: 14px;
 
-    & + li {
-      margin-left: 10px;
-    }
+//   > li {
+//     position: relative;
+//     display: inline-block;
+//     padding-left: 15px;
 
-    > .legend {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
+//     & + li {
+//       margin-left: 10px;
+//     }
 
-      width: 8px;
-    }
-  }
-}
+//     > .legend {
+//       position: absolute;
+//       top: 0;
+//       bottom: 0;
+//       left: 0;
 
-.tokens {
-  user-select: none;
+//       width: 8px;
+//     }
+//   }
+// }
 
-  .token {
-    position: relative;
-    display: inline-block;
-    padding: 6px 12px;
+// .tokens {
+//   user-select: none;
 
-    background: #FFF;
+//   .token {
+//     position: relative;
+//     display: inline-block;
+//     padding: 6px 12px;
 
-    border: 1px solid #CCC;
-    border-radius: 3px;
+//     background: #FFF;
 
-    font-family: 'Inconsolata', monospace;
+//     border: 1px solid #CCC;
+//     border-radius: 3px;
 
-    cursor: pointer;
-    user-select: none;
-    overflow: hidden;
+//     font-family: 'Inconsolata', monospace;
 
-    &.selected {
-      background: #E8F8FF;
-    }
+//     cursor: pointer;
+//     user-select: none;
+//     overflow: hidden;
 
-    > .legend {
-      position: absolute;
-      top: -7px;
-      left: -7px;
-      height: 14px;
-      width: 14px;
+//     &.selected {
+//       background: #E8F8FF;
+//     }
 
-      transform: rotate(45deg);
-    }
-  }
+//     > .legend {
+//       position: absolute;
+//       top: -7px;
+//       left: -7px;
+//       height: 14px;
+//       width: 14px;
 
-}
+//       transform: rotate(45deg);
+//     }
+//   }
 
-ul.classes {
-  position: absolute;
-  display: none;
-  margin: 0;
-  padding: 0;
+// }
 
-  background: #FFF;
+// ul.classes {
+//   position: absolute;
+//   display: none;
+//   margin: 0;
+//   padding: 0;
 
-  border: 1px solid #CCC;
-  border-radius: 3px;
+//   background: #FFF;
 
-  font-family: 'Inconsolata', monospace;
-  list-style: none;
+//   border: 1px solid #CCC;
+//   border-radius: 3px;
 
-  cursor: pointer;
-  overflow: hidden;
+//   font-family: 'Inconsolata', monospace;
+//   list-style: none;
 
-  > li {
-    position: relative;
-    padding: 6px 12px 6px 17px;
+//   cursor: pointer;
+//   overflow: hidden;
 
-    > .legend {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 5px;
-    }
+//   > li {
+//     position: relative;
+//     padding: 6px 12px 6px 17px;
 
-    &:hover {
-      background: #EEE;
-    }
+//     > .legend {
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       bottom: 0;
+//       width: 5px;
+//     }
 
-    & + li {
-      border-top: 1px dotted #CCC;
-    }
-  }
-}
+//     &:hover {
+//       background: #EEE;
+//     }
+
+//     & + li {
+//       border-top: 1px dotted #CCC;
+//     }
+//   }
+// }

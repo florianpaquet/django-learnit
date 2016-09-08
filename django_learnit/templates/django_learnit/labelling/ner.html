@@ -18,8 +18,8 @@
 {% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="{% url 'django_learnit:learning-model-list' %}">django-learnit</a></li>
-  <li><a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}">{{ learning_model_name }}</a></li>
-  <li class="active">{% trans "Labelling" %}</li>
+  <li><a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}">{{ learning_model.get_verbose_name }}</a></li>
+  <li class="active">{% trans "Labelling" %} #{{ document.pk }}</li>
 </ol>
 {% endblock breadcrumb %}
 

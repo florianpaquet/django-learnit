@@ -44,6 +44,8 @@ class LearningModel(LearningModelBuilderMixin):
     """
     name = None
     queryset = None
+    verbose_name = ''
+    description = ''
 
     @classmethod
     def get_name(cls):
@@ -64,6 +66,12 @@ class LearningModel(LearningModelBuilderMixin):
             })
 
         return cls.name
+
+    def get_verbose_name(self):
+        """
+        Returns the model verbose name or the class name if not set
+        """
+        return self.verbose_name or self.__class__.__name__
 
     def get_queryset(self):
         """

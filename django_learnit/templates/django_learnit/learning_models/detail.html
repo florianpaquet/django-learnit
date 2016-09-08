@@ -1,7 +1,37 @@
 {% extends "django_learnit/base.html" %}
+{% load i18n %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="{% url 'django_learnit:learning-model-list' %}">django-learnit</a></li>
+  <li class="active">{{ learning_model.get_verbose_name }}</li>
+</ol>
+{% endblock breadcrumb %}
 
 {% block body %}
-<a href="{% url 'django_learnit:random-document-labelling' name=learning_model_name %}">Document labelling</a>
+<!-- <a href="{% url 'django_learnit:random-document-labelling' name=learning_model_name %}">Document labelling</a> -->
 
-{{ recently_updated_labelled_documents }}
+<h1>{{ learning_model.get_verbose_name }}</h1>
+<p>{{ learning_model.description|default:_("No description") }}</p>
+
+
+<!-- recently updated -->
+<h2>{% trans "Recently updated" %}</h2>
+
+<table class="table">
+  <tr>
+    <th>#</th>
+    <th>value</th>
+    <th></th>
+  </tr>
+{% for labelled_document in recently_updated_labelled_documents %}
+  <tr>
+    <td>{{ labelled_document.document_id }}</td>
+    <td>{{ labelled_document.value }}</td>
+    <td><a class="btn btn-default btn-sm" href="{% url 'django_learnit:document-labelling' name=learning_model_name pk=labelled_document.document_id %}">{% trans "Edit" %}</a></td>
+  </tr>
+{% endfor %}
+</table>
+<!-- ./recently updated -->
+
 {% endblock body %}
