@@ -1,1 +1,7 @@
+{% extends "django_learnit/base.html" %}
+
+{% block body %}
 <a href="{% url 'django_learnit:random-document-labelling' name=learning_model_name %}">Document labelling</a>
+
+{{ recently_updated_labelled_documents }}
+{% endblock body %}

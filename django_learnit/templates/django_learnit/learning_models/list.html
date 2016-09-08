@@ -1,3 +1,15 @@
-{% for learning_model_name, learning_model in learning_models.items %}
-  <a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}">{{ learning_model }}</a>
-{% endfor %}
+{% extends "django_learnit/base.html" %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li class="active">django-learnit</li>
+</ol>
+{% endblock breadcrumb %}
+
+{% block body %}
+  {% for learning_model_name, learning_model in learning_models.items %}
+    <a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}">{{ learning_model }}</a>
+  {% endfor %}
+{% endblock body %}
+
+

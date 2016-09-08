@@ -2,13 +2,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title></title>
-    <script src="{% static 'django_learnit/jquery-3.1.0.min.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'django_learnit/normalize.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'django_learnit/style.min.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'django_learnit/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'django_learnit/css/style.min.css' %}">
+
     {% block head %}{% endblock head %}
   </head>
+
   <body>
-    {% block body %}{% endblock body %}
+    <div class="container">
+      {% block breadcrumb %}{% endblock breadcrumb %}
+      {% block body %}{% endblock body %}
+    </div>
+
+    <script src="{% static 'django_learnit/js/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'django_learnit/js/bootstrap.min.js' %}"></script>
+
+    {% block script %}{% endblock script %}
   </body>
 </html>

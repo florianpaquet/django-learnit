@@ -13,7 +13,7 @@ module.exports = function (grunt) {
           compress: true
         },
         files: {
-          'django_learnit/static/django_learnit/style.min.css': 'styles/style.less'
+          'django_learnit/static/django_learnit/css/style.min.css': 'styles/style.less'
         }
       }
     },
