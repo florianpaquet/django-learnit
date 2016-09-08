@@ -14,6 +14,9 @@ setup(
     license='MIT',
     packages=find_packages(),
     install_requires=requires,
-    tests_require=requires + ['factory_boy'],
+    tests_require=requires + [
+        'factory_boy==2.7.0',
+        'freezegun==0.3.7'
+    ],
     test_suite='runtests.runtests'
 )

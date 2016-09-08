@@ -12,6 +12,19 @@ class LearningModelDetailView(LearningModelMixin, TemplateView):
         self.learning_model = self.get_learning_model()
         return super(LearningModelDetailView, self).get(*args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        """
+        Adds learning model context data
+        """
+        context = super(LearningModelDetailView, self).get_context_data(**kwargs)
+
+        # Add the 10 most recently edited LabelledDocuments
+        context['recently_updated_labelled_documents'] = self.learning_model\
+            .get_labelled_documents_queryset()\
+            .order_by('-modified')[:10]
+
+        return context
+
     def get_template_names(self):
         """
         Returns learning model specific template name along with a default one

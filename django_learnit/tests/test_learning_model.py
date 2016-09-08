@@ -5,6 +5,8 @@ from django.test import (
     RequestFactory)
 from django.views.generic import TemplateView
 
+from freezegun import freeze_time
+
 from ..exceptions import ImproperlyConfigured
 from ..learning.base import LearningModel
 from ..learning.classifier import ClassifierModel
@@ -305,6 +307,39 @@ class LearningModelDetailViewTestCase(TestCase):
 
         self.view.get(request)
         self.assertEqual(self.view.learning_model.__class__, TestModel)
+
+    def test_get_context_data(self):
+        """Most recently updated LabelledDocuments are in the context"""
+        model_name = TestModel().get_name()
+
+        # Create old entries
+        with freeze_time("2015-01-01 00:00:00"):
+            for i in range(10):
+                latest = LabelledDocumentFactory.create(
+                    document=Document.objects.create(),
+                    model_name=model_name)
+
+        # But keep the latest one (will be updated)
+        expected_ids = [latest.pk]
+
+        # Create most recent entries
+        with freeze_time("2015-01-01 10:00:00"):
+            for i in range(9):
+                expected_ids.append(
+                    LabelledDocumentFactory.create(
+                        document=Document.objects.create(),
+                        model_name=model_name).pk)
+
+        # Update old entry
+        with freeze_time("2015-01-01 10:00:00"):
+            latest.save()
+
+        self.view.learning_model = TestModel()
+        context = self.view.get_context_data()
+
+        self.assertSetEqual(
+            set([ld.pk for ld in context['recently_updated_labelled_documents']]),
+            set(expected_ids))
 
 
 class LearningModelListViewTestCase(TestCase):
