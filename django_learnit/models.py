@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
+from .library import get_learning_model
+
 
 class LabelledDocumentManager(models.Manager):
 
@@ -80,3 +82,25 @@ class LabelledDocument(models.Model):
         Returns the `label` from the value
         """
         return self.deserialize_value().get('label')
+
+    def get_display_value(self):
+        """
+        Returns the display value according to the model type
+        """
+        learning_model = get_learning_model(self.model_name)
+
+        if learning_model.is_classifier():
+            # Return the label display name
+            classes = dict(learning_model.get_classes())
+
+            if not learning_model.multilabel:
+                return classes.get(self.get_label())
+            else:
+                return [
+                    classes.get(label)
+                    for label in self.get_label()
+                ]
+        elif learning_model.is_named_entity_recognizer():
+            # Return a list of (token, label)
+            labels = [form['label'] for form in self.deserialize_value()]
+            return zip(learning_model.get_tokens(self.document), labels)

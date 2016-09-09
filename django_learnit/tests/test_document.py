@@ -15,7 +15,11 @@ from ..views.base import (
 from ..models import LabelledDocument
 
 from .factories import LabelledDocumentFactory
-from .learning_models import TestModel
+from .learning_models import (
+    TestModel,
+    TestSingleLabelClassifierModel,
+    TestMultiLabelClassifierModel,
+    TestNamedEntityRecognizerModel)
 from .models import Document
 
 
@@ -74,6 +78,42 @@ class LabelledDocumentModelTestCase(TransactionTestCase):
             document=document, model_name='test', value=LabelledDocument.serialize_value(value))
 
         self.assertEqual(labelled_document.get_label(), 'foo')
+
+    def test_get_display_value_for_single_label_classifier(self):
+        """Returns the display value from the classifier"""
+        document = Document.objects.create()
+        labelled_document = LabelledDocumentFactory.create(
+            document=document,
+            model_name=TestSingleLabelClassifierModel.get_name(),
+            value=LabelledDocument.serialize_value({'label': '0'}))
+
+        self.assertEqual(labelled_document.get_display_value(), 'No')
+
+    def test_get_display_value_for_multi_label_classifier(self):
+        """Returns the display values from the classifier"""
+        document = Document.objects.create()
+        labelled_document = LabelledDocumentFactory.create(
+            document=document,
+            model_name=TestMultiLabelClassifierModel.get_name(),
+            value=LabelledDocument.serialize_value({'label': ['0', '1']}))
+
+        self.assertEqual(labelled_document.get_display_value(), ['No', 'Yes'])
+
+    def test_get_display_value_for_ner(self):
+        """Returns the list of (token, label) from the ner"""
+        document = Document.objects.create()
+
+        labelled_document = LabelledDocumentFactory.create(
+            document=document,
+            model_name=TestNamedEntityRecognizerModel.get_name(),
+            value=LabelledDocument.serialize_value(
+                [{'label': 'A'}, {'label': 'B'}]
+            ))
+
+        self.assertEqual(list(labelled_document.get_display_value()), [
+            ('hello', 'A'),
+            ('world', 'B')
+        ])
 
 
 # -- Managers

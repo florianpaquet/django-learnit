@@ -8,30 +8,99 @@
 </ol>
 {% endblock breadcrumb %}
 
-{% block body %}
-<!-- <a href="{% url 'django_learnit:random-document-labelling' name=learning_model_name %}">Document labelling</a> -->
+{% block head %}
+{% if learning_model.is_named_entity_recognizer %}
+<style>
+{% for class, display, color in classes_colors %}
+  .token[data-label="{{ class }}"] {
+    border-color: {{ color }} !important;
+  }
 
-<h1>{{ learning_model.get_verbose_name }}</h1>
-<p>{{ learning_model.description|default:_("No description") }}</p>
-
-
-<!-- recently updated -->
-<h2>{% trans "Recently updated" %}</h2>
-
-<table class="table">
-  <tr>
-    <th>#</th>
-    <th>value</th>
-    <th></th>
-  </tr>
-{% for labelled_document in recently_updated_labelled_documents %}
-  <tr>
-    <td>{{ labelled_document.document_id }}</td>
-    <td>{{ labelled_document.value }}</td>
-    <td><a class="btn btn-default btn-sm" href="{% url 'django_learnit:document-labelling' name=learning_model_name pk=labelled_document.document_id %}">{% trans "Edit" %}</a></td>
-  </tr>
+  [data-label="{{ class }}"] > .legend {
+    background: {{ color }} !important;
+  }
 {% endfor %}
-</table>
-<!-- ./recently updated -->
+</style>
+{% endif %}
+{% endblock head %}
+
+{% block body %}
+
+<div class="main">
+
+  <div class="left">
+    <!-- details -->
+    <h4 class="bordered">{{ learning_model.get_verbose_name }}</h4>
+    <small>{{ learning_model.description|default:_("No description") }}</small>
+    <!-- ./details -->
+
+    <!-- classes legend -->
+    <h4 class="bordered">{% trans "Classes" %}</h4>
+    <ul class="class-legend">
+    {% for class, display, color in classes_colors %}
+      <li data-label="{{ class }}"><div class="legend"></div>{{ display }}</li>
+    {% endfor %}
+    </ul>
+    <!-- ./classes legend -->
+
+    <!-- actions -->
+    <h4 class="bordered">{% trans "Actions" %}</h4>
+    {% if learning_model.get_unlabelled_documents_queryset.count %}
+    {{ learning_model.get_labelled_documents_queryset.count }} / {{ learning_model.get_queryset.count }}
+    <a
+      class="btn btn-primary btn-block"
+      href="{% url 'django_learnit:random-document-labelling' name=learning_model_name %}">{% trans "Start labelling" %}</a>
+    {% else %}
+      <div class="goodjob">
+        <span>ヽ(^。^)ノ</span>
+        <small class="text-muted">{% trans "Congratulations, everything is labelled !" %}</small>
+      </div>
+    {% endif %}
+    <!-- ./actions -->
+  </div>
+
+  <div class="right">
+    <!-- recently updated -->
+    <h4 class="bordered">{% trans "Recently updated documents" %}</h4>
+
+    {% if recently_updated_labelled_documents.count %}
+    <table class="table">
+      <tr>
+        <th>#</th>
+        <th>value</th>
+        <th></th>
+      </tr>
+    {% for labelled_document in recently_updated_labelled_documents %}
+      <tr>
+        <td>{{ labelled_document.document_id }}</td>
+        <td>
+          {% if learning_model.is_classifier %}
+            {{ labelled_document.get_display_value }}
+          {% elif learning_model.is_named_entity_recognizer %}
+            <!-- tokens -->
+            <div class="tokens">
+            {% for token, label in labelled_document.get_display_value %}
+              <span class="token" data-label="{{ label }}">
+                {{ token }}
+                <div class="legend"></div>
+              </span>
+            {% endfor %}
+            </div>
+            <!-- ./tokens -->
+          {% endif %}
+        </td>
+        <td>
+          <a
+            class="btn btn-default btn-sm"
+            href="{% url 'django_learnit:document-labelling' name=learning_model_name pk=labelled_document.document_id %}">{% trans "Edit" %}</a>
+          </td>
+      </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    <!-- ./recently updated -->
+  </div>
+
+</div>
 
 {% endblock body %}

@@ -43,8 +43,8 @@ class ClassifierFormTestCase(TestCase):
     def test_label_choices(self):
         """Label choices are set during form initialization"""
         test_classes = (
-            (0, 'No'),
-            (1, 'Yes')
+            ('0', 'No'),
+            ('1', 'Yes')
         )
 
         form = SingleLabelClassifierForm(classes=test_classes)
@@ -73,10 +73,15 @@ class GenericClassifierMixinTestCase(TestCase):
             (1, 'Yes')
         )
 
+        expected_classes = (
+            ('0', 'No'),
+            ('1', 'Yes')
+        )
+
         class TestClassifier(GenericClassifierMixin):
             classes = test_classes
 
-        self.assertEqual(TestClassifier().get_classes(), test_classes)
+        self.assertEqual(TestClassifier().get_classes(), expected_classes)
 
 
 class GenericClassifierModelLabellingMixinTestView(GenericClassifierModelLabellingMixin, TemplateView):
@@ -91,8 +96,13 @@ class GenericClassifierModelLabellingMixinTestCase(TestCase):
 
     def test_get_classes(self):
         """Returns the classifier classes"""
+        expected_classes = (
+            ('0', 'No'),
+            ('1', 'Yes')
+        )
+
         self.view.learning_model = TestSingleLabelClassifierModel()
-        self.assertEqual(self.view.get_classes(), TestSingleLabelClassifierModel.classes)
+        self.assertEqual(self.view.get_classes(), expected_classes)
 
     def test_get_context_data(self):
         """Adds classifier context data"""
@@ -100,7 +110,12 @@ class GenericClassifierModelLabellingMixinTestCase(TestCase):
         self.view.learning_model = TestSingleLabelClassifierModel()
         context = self.view.get_context_data()
 
-        self.assertEqual(context['classes'], TestSingleLabelClassifierModel.classes)
+        expected_classes = (
+            ('0', 'No'),
+            ('1', 'Yes')
+        )
+
+        self.assertEqual(context['classes'], expected_classes)
 
 
 class ClassifierModelLabellingMixinTestView(ClassifierModelLabellingMixin, TemplateView):
@@ -116,17 +131,22 @@ class ClassifierModelLabellingMixinTestCase(TestCase):
     def test_get_context_data(self):
         """Adds classifier context data"""
         # Single label
+        expected_classes = (
+            ('0', 'No'),
+            ('1', 'Yes')
+        )
+
         self.view.learning_model = TestSingleLabelClassifierModel()
         context = self.view.get_context_data()
 
-        self.assertEqual(context['classes'], TestSingleLabelClassifierModel.classes)
+        self.assertEqual(context['classes'], expected_classes)
         self.assertFalse(context['multilabel'])
 
         # Multi label
         self.view.learning_model = TestMultiLabelClassifierModel()
         context = self.view.get_context_data()
 
-        self.assertEqual(context['classes'], TestMultiLabelClassifierModel.classes)
+        self.assertEqual(context['classes'], expected_classes)
         self.assertTrue(context['multilabel'])
 
     def test_get_form_class(self):

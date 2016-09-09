@@ -1,4 +1,5 @@
 {% extends "django_learnit/base.html" %}
+{% load i18n %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -8,23 +9,36 @@
 
 {% block body %}
 
-<!-- model list -->
-<div class="model-list list-group">
-{% for learning_model_name, learning_model in learning_models.items %}
-  <a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}" class="list-group-item">
-    <div class="description">
-      <h4 class="list-group-item-heading">{{ learning_model.get_verbose_name }}</h4>
-      <p class="list-group-item-text">
-        {{ learning_model.description|default:_("No description") }}
-      </p>
+<div class="main">
+
+  <!-- intro -->
+  <div class="left">
+    <h4 class="bordered">{% trans "Welcome to django-learnit !" %}</h4>
+    <small>{% trans "Here is the list of registered models in the application." %}</small>
+  </div>
+  <!-- ./intro -->
+
+  <div class="right">
+    <!-- model list -->
+    <div class="model-list list-group">
+    {% for learning_model_name, learning_model in learning_models.items %}
+      <a href="{% url 'django_learnit:learning-model-detail' name=learning_model_name %}" class="list-group-item">
+        <div class="description">
+          <h4 class="list-group-item-heading">{{ learning_model.get_verbose_name }}</h4>
+          <p class="list-group-item-text">
+            {{ learning_model.description|default:_("No description") }}
+          </p>
+        </div>
+        <div class="meta">
+          {{ learning_model.get_labelled_documents_queryset.count }} / {{ learning_model.get_queryset.count }}
+        </div>
+      </a>
+    {% endfor %}
     </div>
-    <div class="meta">
-      {{ learning_model.get_labelled_documents_queryset.count }} / {{ learning_model.get_queryset.count }}
-    </div>
-  </a>
-{% endfor %}
+    <!-- ./model list -->
+  </div>
+
 </div>
-<!-- ./model list -->
 
 {% endblock body %}
 

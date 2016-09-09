@@ -11,14 +11,15 @@ class GenericClassifierMixin(object):
 
     def get_classes(self):
         """
-        Returns the classifier output classes
+        Returns the classifier output classes.
+        Implicitly transforms the key to a string.
         """
         if not self.classes:
             raise ImproperlyConfigured("%(cls)s is missing labels." % {
                 'cls': self.__class__.__name__
             })
 
-        return self.classes
+        return tuple(((str(c[0]),) + c[1:]) for c in self.classes)
 
 
 class ClassifierModel(GenericClassifierMixin, LearningModel):

@@ -19,7 +19,8 @@ from .factories import LabelledDocumentFactory
 from .models import Document
 from .learning_models import (
     TestModel,
-    TestSingleLabelClassifierModel)
+    TestSingleLabelClassifierModel,
+    TestNamedEntityRecognizerModel)
 
 
 class LearningModelTestCase(TestCase):
@@ -319,7 +320,7 @@ class LearningModelDetailViewTestCase(TestCase):
         self.view.get(request)
         self.assertEqual(self.view.learning_model.__class__, TestModel)
 
-    def test_get_context_data(self):
+    def test_get_context_data_recent_documents(self):
         """Most recently updated LabelledDocuments are in the context"""
         model_name = TestModel().get_name()
 
@@ -351,6 +352,13 @@ class LearningModelDetailViewTestCase(TestCase):
         self.assertSetEqual(
             set([ld.pk for ld in context['recently_updated_labelled_documents']]),
             set(expected_ids))
+
+    def test_get_context_data_classes_colors(self):
+        """Adds classes color for NER model"""
+        self.view.learning_model = TestNamedEntityRecognizerModel()
+        context = self.view.get_context_data()
+
+        self.assertIn('classes_colors', context)
 
 
 class LearningModelListViewTestCase(TestCase):

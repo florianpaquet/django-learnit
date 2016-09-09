@@ -23,6 +23,10 @@ class LearningModelDetailView(LearningModelMixin, TemplateView):
             .get_labelled_documents_queryset()\
             .order_by('-modified')[:10]
 
+        # Add NER classes colors
+        if self.learning_model.is_named_entity_recognizer():
+            context['classes_colors'] = self.learning_model.get_classes_with_colors()
+
         return context
 
     def get_template_names(self):
