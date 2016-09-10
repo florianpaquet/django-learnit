@@ -43,9 +43,11 @@ class TestNamedEntityRecognizerModel(NamedEntityRecognizerModel):
     name = 'test_ner'
     queryset = Document.objects.all()
     classes = (
+        ('O', 'Outside'),
         ('DAY', 'Day'),
         ('MONTH', 'Month')
     )
+    default_class = 'O'
 
     def get_tokens(self, document):
         return ['hello', 'world']

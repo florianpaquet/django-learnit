@@ -135,6 +135,36 @@ class LearningModelTestCase(TestCase):
         with self.assertRaises(NotImplementedError):
             self.assertIsNone(TestSingleLabelClassifierModel().predict(None))
 
+    def test_get_default_class_raise_when_none(self):
+        """Raises ImproperlyConfigured when no default class set"""
+        class TestModel(NamedEntityRecognizerModel):
+            pass
+
+        with self.assertRaises(ImproperlyConfigured):
+            TestModel().get_default_class()
+
+    def test_get_default_class_raise_when_not_an_available_class(self):
+        """Raises ImproperlyConfigured when default class is not an available one"""
+        class TestModel(NamedEntityRecognizerModel):
+            classes = (
+                ('foo', 'foo')
+            )
+            default_class = 'bar'
+
+        with self.assertRaises(ImproperlyConfigured):
+            TestModel().get_default_class()
+
+    def test_get_default_class(self):
+        """Returns the default class"""
+        class TestModel(NamedEntityRecognizerModel):
+            classes = (
+                ('foo', 'foo'),
+                ('bar', 'bar'),
+            )
+            default_class = 'bar'
+
+        self.assertEqual(TestModel().get_default_class(), 'bar')
+
 
 # -- Mixins
 

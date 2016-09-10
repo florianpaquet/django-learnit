@@ -52,8 +52,8 @@ $(document).ready(function () {
   tokens.mousedown(function () {
     var index = $(this).data('index');
 
-    startIndex = index;
-    endIndex = index;
+    startIndex = parseInt(index);
+    endIndex = parseInt(index);
 
     updateSelectionFeedback();
   });
@@ -61,7 +61,7 @@ $(document).ready(function () {
   // Update selection
   tokens.mouseenter(function () {
     if (startIndex !== null) {
-      endIndex = $(this).data('index');
+      endIndex = parseInt($(this).data('index'));
       updateSelectionFeedback();
     }
   });
@@ -102,8 +102,8 @@ $(document).ready(function () {
 
   // Set selection
   $('.classes > li').click(function () {
-    var start = $(this).parent().attr('data-start');
-    var end = $(this).parent().attr('data-end');
+    var start = parseInt($(this).parent().attr('data-start'));
+    var end = parseInt($(this).parent().attr('data-end'));
     setLabels(start, end, $(this).data('label'));
   });
 

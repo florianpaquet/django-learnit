@@ -45,7 +45,7 @@ class NamedEntityRecognizerModelLabellingMixin(GenericClassifierModelLabellingMi
         initial = super(NamedEntityRecognizerModelLabellingMixin, self).get_initial()
 
         if len(initial) != len(self.tokens):
-            initial = [{'label': self.learning_model.outside_class}] * len(self.tokens)
+            initial = [{'label': self.learning_model.get_default_class()}] * len(self.tokens)
 
         return initial
 

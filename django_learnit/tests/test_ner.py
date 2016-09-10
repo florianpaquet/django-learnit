@@ -27,43 +27,10 @@ class NamedEntityRecognizerModelTestCase(TestCase):
     def setUp(self):
         self.model = self.NERModel()
 
-    def test_default_outside_class_is_added_to_classes(self):
-        """Outside class is added"""
-        expected = (
-            ('O', 'Outside'),
-            ('TEST', 'test'),
-            ('OTHER', 'other')
-        )
-        self.assertEqual(self.model.get_classes(), expected)
-
-    def test_specific_outside_class_is_added_to_classes(self):
-        """Specific outside class is added"""
-        self.model.outside_class = 'NOPE'
-        self.model.outside_class_display = 'Nope'
-
-        expected = (
-            ('NOPE', 'Nope'),
-            ('TEST', 'test'),
-            ('OTHER', 'other')
-        )
-
-        self.assertEqual(self.model.get_classes(), expected)
-
     def test_get_tokens_raise_default(self):
         """Raise NotImplementedError by default"""
         with self.assertRaises(NotImplementedError):
             self.model.get_tokens(None)
-
-    def test_get_classes_with_colors(self):
-        """Returns classes with colors"""
-        expected = (
-            ('O', 'Outside', self.model.outside_color),
-            ('TEST', 'test', '#FF0000'),
-            ('OTHER', 'other', self.model.default_colors[0])
-        )
-        classes_colors = self.model.get_classes_with_colors()
-
-        self.assertEqual(classes_colors, expected)
 
 
 # -- Mixins
@@ -81,6 +48,7 @@ class NamedEntityRecognizerModelLabellingMixinTestCase(TestCase):
             ('LOCATION', 'Location'),
             ('DATE', 'Date')
         )
+        default_class = 'LOCATION'
 
         def get_tokens(self, document):
             return document
@@ -118,9 +86,9 @@ class NamedEntityRecognizerModelLabellingMixinTestCase(TestCase):
         self.view.tokens = [1, 2, 3]
         initial = self.view.get_initial()
         self.assertEqual(initial, [
-            {'label': 'O'},
-            {'label': 'O'},
-            {'label': 'O'}
+            {'label': 'LOCATION'},
+            {'label': 'LOCATION'},
+            {'label': 'LOCATION'}
         ])
 
 

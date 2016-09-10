@@ -8,7 +8,7 @@ class GenericClassifierMixin(object):
     Classifier mixin holding available classes for the learning model
     """
     classes = ()
-    default_classes_colors = (
+    default_colors = (
         '#AB47BC',
         '#F44336',
         '#303F9F',
@@ -21,7 +21,7 @@ class GenericClassifierMixin(object):
 
     def get_classes(self):
         """
-        Returns the classifier output classes.
+        Returns the classifier output classes without colors.
         Implicitly transforms the key to a string.
         """
         if not self.classes:
@@ -34,14 +34,14 @@ class GenericClassifierMixin(object):
     def get_classes_with_colors(self):
         """
         Returns classes with their associated colors
-        If there's no explicit color, pick one in the `default_classes_colors`
+        If there's no explicit color, pick one in the `default_colors`
         """
         i = 0
         out_classes = ()
 
-        for c in self.get_classes():
+        for c in self.classes:
             if len(c) != 3:
-                c += (self.default_classes_colors[i],)
+                c += (self.default_colors[i],)
                 i += 1
             out_classes += (c,)
 

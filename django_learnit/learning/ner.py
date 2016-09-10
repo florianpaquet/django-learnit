@@ -1,21 +1,31 @@
 from .base import LearningModel
 from .classifier import GenericClassifierMixin
 
+from ..exceptions import ImproperlyConfigured
+
 
 class NamedEntityRecognizerModel(GenericClassifierMixin, LearningModel):
     """
     NER model that associates a label to each token
     """
-    outside_class = 'O'
-    outside_class_display = 'Outside'
-    outside_color = '#CCCCCC'
+    default_class = None
 
-    def get_classes(self):
+    def get_default_class(self):
         """
-        Returns classes with preprended oustide class
+        Returns the default class.
+        Raise `ImproperlyConfigured` if it's not an available class
         """
-        classes = super(NamedEntityRecognizerModel, self).get_classes()
-        return ((self.outside_class, self.outside_class_display),) + classes
+        if self.default_class is None:
+            raise ImproperlyConfigured("%(name)s is missing a default class." % {
+                'name': self.__class__.__name__
+            })
+
+        if self.default_class not in dict(self.get_classes()):
+            raise ImproperlyConfigured("%(name)s is not an available class." % {
+                'name': self.default_class
+            })
+
+        return self.default_class
 
     def get_tokens(self, document):
         """
@@ -27,14 +37,3 @@ class NamedEntityRecognizerModel(GenericClassifierMixin, LearningModel):
         Here, you usually return the output of the model tokenizer.
         """
         raise NotImplementedError()
-
-    def get_classes_with_colors(self):
-        """
-        Returns classes with their associated colors
-        If there's no explicit color, pick one in the `default_colors` list
-        """
-        classes = super(NamedEntityRecognizerModel, self).get_classes()
-
-        return (
-            (self.outside_class, self.outside_class_display, self.outside_color),
-        ) + classes

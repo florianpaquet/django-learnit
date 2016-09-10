@@ -83,6 +83,21 @@ class GenericClassifierMixinTestCase(TestCase):
 
         self.assertEqual(TestClassifier().get_classes(), expected_classes)
 
+    def test_get_classes_with_colors(self):
+        """Returns classes with colors"""
+        class TestClassifier(GenericClassifierMixin):
+            classes = (
+                ('TEST', 'test', '#FF0000'),
+                ('OTHER', 'other')
+            )
+
+        expected = (
+            ('TEST', 'test', '#FF0000'),
+            ('OTHER', 'other', TestClassifier.default_colors[0])
+        )
+
+        self.assertEqual(TestClassifier().get_classes_with_colors(), expected)
+
 
 class GenericClassifierModelLabellingMixinTestView(GenericClassifierModelLabellingMixin, TemplateView):
     pass
